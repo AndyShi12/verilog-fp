@@ -26,3 +26,16 @@ sincos SINCOS(
     .sine_result(tb_sine_result)
 );
          
+always
+	begin
+		tb_clk = 1'b0;
+		#(CLK_PERIOD/2.0);
+		tb_clk = 1'b1;
+		#(CLK_PERIOD/2.0);
+	end
+	
+initial
+  begin
+    end
+    
+endmodule

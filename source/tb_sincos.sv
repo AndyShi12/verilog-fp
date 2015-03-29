@@ -15,7 +15,7 @@ localparam	CHECK_DELAY = 1;
 
 reg tb_clk, tb_nReset, tb_sine_start, tb_sine_done;
 reg [31:0] tb_opx;
-reg [31:0] tb_sin_result;
+reg [31:0] tb_sine_result;
 
 sincos SINCOS(
     .clk(tb_clk), 
@@ -26,5 +26,16 @@ sincos SINCOS(
     .sine_result(tb_sine_result)
 );
          
-end
+always
+	begin
+		tb_clk = 1'b0;
+		#(CLK_PERIOD/2.0);
+		tb_clk = 1'b1;
+		#(CLK_PERIOD/2.0);
+	end
+	
+initial
+  begin
+    end
+    
 endmodule
