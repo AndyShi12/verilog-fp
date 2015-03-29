@@ -26,7 +26,7 @@ reg [22:0] frac;
 always_ff @ (posedge clk, negedge n_rst) 
 begin
   
-if (n_rst == 0) begin
+ if (n_rst == 0) begin
     mul_result = 0;
     mul_done = 0;
     mul_overflow = 1;

@@ -19,9 +19,7 @@ begin
 if (n_rst == 0) begin
     sine_result <= 0;
     sine_done = 0;
-  end
-  
-  
+    end
 end
 
 

@@ -1,0 +1,7 @@
+// $Id: $
+// File name:   tb_addsub.sv
+// Created:     3/28/2015
+// Author:      Andy Shi
+// Lab Section: 337-03
+// Version:     1.0  Initial Design Entry
+// Description: test bench for add/sub

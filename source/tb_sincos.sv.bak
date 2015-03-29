@@ -26,5 +26,3 @@ sincos SINCOS(
     .sine_result(tb_sine_result)
 );
          
-end
-endmodule

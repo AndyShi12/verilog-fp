@@ -43,7 +43,7 @@ initial
   $display("----------- reset -----------");
   @(negedge tb_clk);
   tb_nReset = 0;
-  $display("correct result:              00000000000000000000000000000000");
+  $display("correct result:              000000000000000000000000000000000");
   #(CLK_PERIOD);
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
  	tb_nReset = 1;
