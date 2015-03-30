@@ -14,6 +14,10 @@ output reg [13:0] add_result,
 output reg add_done, add_overflow
 );
 
+reg [7:0]exp1;
+reg [7:0]exp2;
+reg [7:0]exp;
+
 always_ff @ (posedge clk, negedge n_rst) 
 begin
  if (n_rst == 0) begin
@@ -22,7 +26,10 @@ begin
       add_done = 0;
  end
 
+assign exp1 = op1[30:23];
+assign exp2 = op2[30:23];
 
+assign exp = exp1 - exp2;
 
 
 end
