@@ -40,7 +40,6 @@ exp2 = op2[30:23];
 f1 = op1[22:0];
 f2 = op2[22:0];
 
-sign = op1[31] ^ op2[31];
 exp = exp1 - exp2;
 frac = f1+f2;
 add_result = {exp, frac};

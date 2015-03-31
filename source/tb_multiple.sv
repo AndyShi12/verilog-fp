@@ -7,7 +7,6 @@
 // Description: testbench for multiply
 
 `timescale 1ns/10ps
-
 module tb_multiple();
 
 localparam	CLK_PERIOD	= 2.5;
