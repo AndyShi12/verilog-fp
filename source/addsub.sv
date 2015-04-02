@@ -21,19 +21,25 @@ reg [7:0] exp;
 reg [23:0] f1;
 reg [23:0] f2;
 reg [22:0] frac;
-
+reg [31:0] ans;
 
 always_ff @ (posedge clk, negedge n_rst) 
 begin
   
 if (n_rst == 0) begin
-      add_result = 0;
-      add_overflow = 0;
-      add_done = 0;
+      add_result <= 0;
+      add_overflow <= 0;
+      add_done <= 0;
     end
-else begin
-
-add_done = 0;
+    else begin
+      add_result <= ans;
+      add_overflow <= 0;
+      add_done <= 1;
+    end
+  end
+  
+always_comb
+begin
 
 exp1 = op1[30:23];
 exp2 = op2[30:23];
@@ -43,11 +49,11 @@ f2 = op2[22:0];
 sign = op1[31] ^ op2[31];
 exp = exp1 - exp2;
 frac = f1+f2;
-add_result = {exp, frac};
-add_done = 1;
 
+ans = {sign, exp, frac};
 end
-end
+
+
 endmodule
 
 

@@ -39,6 +39,11 @@ always
 initial
   begin
 	
+	
+	endmodule
+	
+	
+	/*
   $display("----------- reset -----------");
   @(negedge tb_clk);
   tb_nReset = 0;
@@ -101,4 +106,4 @@ initial
   #(10*CHECK_DELAY);
   end
     
-endmodule
+endmodule*/

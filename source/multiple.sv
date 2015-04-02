@@ -22,29 +22,33 @@ reg [23:0] m1;
 reg [23:0] m2;
 reg [47:0] mul;
 reg [22:0] frac;
+reg [31:0] ans;
 
 always_ff @ (posedge clk, negedge n_rst) 
 begin
-  
 if (n_rst == 0) begin
-    mul_result = 0;
-    mul_done = 0;
-    mul_overflow = 1;
+    mul_result <= '0;
+    mul_done <= 0;
+    mul_overflow <= 1;
+  end
+  else
+    begin
+    mul_overflow <= 0;
+    mul_done <= 1;
+    mul_result <= ans;
     end
-else begin
-
-mul_done = 0;
-mul_overflow = 0;
+end
+ 
+always_comb
+begin
 sign = op1[31] ^ op2[31];
 exp = op1[30:23] + op2[30:23] - bias;
 m1 = {1,op1[22:0]};   
 m2 = {1,op2[22:0]};  
 mul = m1 * m2;
-mul_result = {sign, exp, mul[45:23]};
-mul_done = 1;
+ans = {sign, exp, mul[45:23]};
 end
 
-end
 endmodule
 
 

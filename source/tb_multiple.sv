@@ -9,7 +9,7 @@
 `timescale 1ns/10ps
 module tb_multiple();
 
-localparam	CLK_PERIOD	= 2.5;
+localparam	CLK_PERIOD	= 5;
 localparam	CHECK_DELAY = 1; 
 
 reg tb_clk, tb_nReset, tb_mul_start, tb_mul_done, tb_mul_overflow;
@@ -46,7 +46,7 @@ initial
   #(CLK_PERIOD);
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
  	tb_nReset = 1;
- 	#(10*CHECK_DELAY);
+ 	#(10*CHECK_DELAY);   
  
   $display("\n----------- pos/pos -----------");
   @(negedge tb_clk);
@@ -55,7 +55,7 @@ initial
   $display("correct result:              00111111111100000000000000000000");
   #(CLK_PERIOD);
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
- 	#(10*CHECK_DELAY);
+  #(10*CHECK_DELAY);
  	
  	@(negedge tb_clk);
  	tb_op1 = 32'b01000000000000000000000000000000;
@@ -78,7 +78,7 @@ initial
   @(negedge tb_clk);
  	tb_op1 = 32'b11000000010000000000000000000000;
   tb_op2 = 32'b11000000100000000000000000000000;
-  $display("correct result:              01000001010000000000000000000000");
+  $display("correct result:              01000001010000000000000000000000");  
   #(CLK_PERIOD);
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
   #(10*CHECK_DELAY);
