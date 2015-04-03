@@ -41,11 +41,16 @@ end
  
 always_comb
 begin
-sign = op1[31] ^ op2[31];
+
 exp = op1[30:23] + op2[30:23] - bias;
 m1 = {1,op1[22:0]};   
 m2 = {1,op2[22:0]};  
 mul = m1 * m2;
+
+
+sign = op1[31] ^ op2[31];
+
+
 ans = {sign, exp, mul[45:23]};
 end
 

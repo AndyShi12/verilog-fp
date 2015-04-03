@@ -17,10 +17,12 @@ output reg add_done, add_overflow
 reg sign;
 reg [7:0] exp1;
 reg [7:0] exp2;
+reg [7:0] expDiff;
 reg [7:0] exp;
+
 reg [23:0] f1;
 reg [23:0] f2;
-reg [22:0] frac;
+reg [24:0] frac;
 reg [31:0] ans;
 
 always_ff @ (posedge clk, negedge n_rst) 
@@ -43,16 +45,102 @@ begin
 
 exp1 = op1[30:23];
 exp2 = op2[30:23];
-f1 = op1[22:0];
-f2 = op2[22:0];
+f1 = {1,op1[22:0]};
+f2 = {1,op2[22:0]};
 
-sign = op1[31] ^ op2[31];
-exp = exp1 - exp2;
-frac = f1+f2;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////// Same exponential
+if (exp1 == exp2) begin 
+  frac = f1+f2;
 
-ans = {sign, exp, frac};
+
+if (frac[24] == 1)
+  exp = exp1 + 1'b1;
+else
+  exp = exp1;  
+
+
+if ((op1[31] != op2[31]) && (f1==f2)) begin
+  frac = 24'b0;
+  exp = 8'b0;
+  sign = 0;
+end
+else 
+
+if (op1[31] != op2[31]) begin
+ // $display("different sign bit");
+    if (op1[31] == 1) begin // op1 is positive
+      if (f1 > f2) begin // op1 is greater
+        sign = 1;
+      end
+      else begin  // op1 is smaller
+        sign = 0;
+      end
+    end   
+    else begin
+      ///$display("op1[31] == 0");
+      if (f1 >= f2) begin
+        sign = 0;
+      end
+      else begin
+        sign = 1; 
+      end
+    end
+end
+else begin
+  sign = op1[31];
 end
 
+ans = {sign, exp, frac[23:1]};
+
+  $display("sign is %b | %b, exp is %b | %b", op1[31], op2[31], exp1, exp2);
+  $display("f1 is %b, f2 is %b, sum is %b", f1, f2, frac);
+end 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+else if (exp1 > exp2) begin
+  $display("TOP is bigger");
+  expDiff = exp1 - exp2;
+  $display("ORIGINAL f1 is %b, f2 is %b", f1, f2);
+  $display("exp1 is %b, exp2 is %b, difference is %b",exp1, exp2, expDiff);
+ 
+  f2 = f2 >> expDiff;
+  $display("NEW f2 is %b", f2,);
+  
+  frac = f1 + f2;
+    $display("f1 is %b, f2 is %b, sum is %b", f1, f2, frac);
+  if (frac[24] == 1)
+  exp = exp1 + 1'b1;
+  else
+  exp = exp1;  
+
+
+  sign = op1[31];
+  ans = {sign, exp, frac[23:1]};
+  end
+
+else begin
+  $display("TOP is smaller");
+  expDiff = exp2 - exp1;
+  $display("ORIGINAL f1 is %b, f2 is %b", f1, f2);
+  $display("exp1 is %b, exp2 is %b, difference is %b",exp1, exp2, expDiff);
+ 
+  f1 = f1 >> expDiff;
+  $display("NEW f1 is %b", f1,);
+  
+  frac = f1 + f2;
+    $display("f1 is %b, f2 is %b, sum is %b", f1, f2, frac);
+  if (frac[24] == 1)
+  exp = exp2 + 1'b1;
+  else
+  exp = exp2;  
+
+  sign = op2[31];
+  ans = {sign, exp, frac[23:1]};
+end 
+
+
+end
 
 endmodule
 

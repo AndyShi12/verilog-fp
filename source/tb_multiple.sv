@@ -56,7 +56,8 @@ initial
   #(CLK_PERIOD);
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
   #(10*CHECK_DELAY);
- 	
+  
+ 	$display("\n\n----------- pos/pos -----------");
  	@(negedge tb_clk);
  	tb_op1 = 32'b01000000000000000000000000000000;
   tb_op2 = 32'b01000000010000000000000000000000;
@@ -65,7 +66,7 @@ initial
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
   #(10*CHECK_DELAY);
  
-  $display("\n----------- pos/neg -----------");
+  $display("\n\n----------- pos/neg -----------");
   @(negedge tb_clk);
  	tb_op1 = 32'b00111111100000000000000000000000;
   tb_op2 = 32'b11000000110000000000000000000000;
@@ -74,7 +75,7 @@ initial
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
   #(10*CHECK_DELAY);
   
-  $display("\n----------- neg/neg -----------");
+  $display("\n\n----------- neg/neg -----------");
   @(negedge tb_clk);
  	tb_op1 = 32'b11000000010000000000000000000000;
   tb_op2 = 32'b11000000100000000000000000000000;

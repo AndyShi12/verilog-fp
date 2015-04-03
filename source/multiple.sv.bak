@@ -35,7 +35,7 @@ if (n_rst == 0) begin
     begin
     mul_overflow <= 0;
     mul_done <= 1;
-        mul_result <= ans;
+    mul_result <= ans;
     end
 end
  
