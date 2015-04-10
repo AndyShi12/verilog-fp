@@ -57,7 +57,7 @@ initial
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
   #(10*CHECK_DELAY);
   
- 	 $display("\n\n----------- pos/pos -----------");
+ 	$display("\n\n----------- pos/pos -----------");
  	@(negedge tb_clk);
  	tb_op1 = 32'b01000000000000000000000000000000;
   tb_op2 = 32'b01000000010000000000000000000000;

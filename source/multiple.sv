@@ -49,8 +49,6 @@ mul = m1 * m2;
 
 
 sign = op1[31] ^ op2[31];
-
-
 ans = {sign, exp, mul[45:23]};
 end
 

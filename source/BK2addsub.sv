@@ -42,17 +42,20 @@ end
 
 always_comb
 begin
-  
+    
 exp1 = op1[30:23];
 exp2 = op2[30:23];
 f1 = {1,op1[22:0]};
 f2 = {1,op2[22:0]};
 sign = op1[31];
-
+    
+    
+    
+    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// Same exponential
 if (exp1 == exp2) begin 
    $display("exp1 is %b, exp2 is %b",exp1, exp2);
-  exp = exp1;
+  
   if(op1[31] == op2[31]) begin
     frac = f1+f2;
     $display("1. equals##################op1 == op2");
@@ -131,21 +134,36 @@ else if (exp1 > exp2) begin
   
   frac = f1 + f2;
  //   $display("f1 is %b, f2 is %b, sum is %b", f1, f2, frac);
+    
+    if(op1[31] == op2[31]) begin
+    frac = f1+f2;
+    $display("2. equals##################op1 == op2");
+    if (frac[24] == 1)
+      exp = exp1 + 1'b1;
+    else
+      exp = exp1;
+  end
   
    if (op1[31] == 0 && op2[31] == 1) begin
       frac = f1-f2;
-      $display("NEW fraction is %b, from %b - %b", frac, f1, f2);
+      $display("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+     exp = exp1;
+      $display("DDDD ##########NEW fraction is %b, from %b - %b", frac, f1, f2);
    end
   
    if (op1[31] == 1 && op2[31] == 0) begin
       frac = f2-f1;
-      $display("NEW fraction is %b, from %b - %b", frac, f2, f1);
+      $display("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+     exp = exp1;
+      $display("EEEEE ##########NEW fraction is %b, from %b - %b", frac, f2, f1);
    end
    
-  if (frac[24] == 1)
-  exp = exp1 + 1'b1;
-  else
-  exp = exp1;
+   
+   
+  //if (frac[24] == 1)
+  //exp = exp1 + 1'b1;
+  //else
+  //exp = exp1;
 
   sign = op1[31];
   
@@ -153,38 +171,42 @@ else if (exp1 > exp2) begin
   ans = {sign, exp, frac[22:0]};
   end
   
-  else begin
+  else 
+  begin
+    
   //////////////////////////////////////////////////////////// exp1 < exp2
  // $display("TOP is smaller");
   expDiff = exp2 - exp1;
   $display("exp1 is %b, exp2 is %b, difference is %b",exp1, exp2, expDiff);
   $display("ORIGINAL f1 is %b, f2 is %b", f1, f2);
   f1 = f1 >> expDiff;
-  $display("New      f1 is %b, f2 is %b", f1, f2);
-  
-  frac = f1 + f2;
+  $display("NEW     f1 is %b, f2 is %b, exp is ", f1, f2);
  //   $display("f1 is %b, f2 is %b, sum is %b", f1, f2, frac);
 
+  
    if (op1[31] == 0 && op2[31] == 1) begin
+    $display("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"); 
       frac = f1-f2;
-      $display("NEW fraction is %b, from %b - %b", frac, f1, f2);
+      exp = exp1;
+      $display("FFFF FF##########NEW fraction is %b, from %b - %b", frac, f1, f2);
    end
   
    if (op1[31] == 1 && op2[31] == 0) begin
-      frac = f2-f1;
-      $display("NEW fraction is %b, from %b - %b", frac, f2, f1);
+     $display("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"); 
+      frac = f1-f2;
+      exp = exp1;
+      $display("GGG GG##########NEW fraction is %b, from %b - %b", frac, f2, f1);
    end
-   
-  if (frac[24] == 1)
-  exp = exp2 + 1'b1;
-  else
-  exp = exp2;  
-  
 
   sign = op2[31];
         $display("NEW exp1 = %b, exp2 = %b, final exp = %b", exp1, exp2, exp);
   ans = {sign, exp, frac[22:0]};
 end 
+
+ $display("ENDDDDD");
+
+
+
 
 end
 endmodule
@@ -197,25 +219,25 @@ endmodule
 
 
 /*
-op1: 0 01111111 01000000    00000000 0000 000
-op2: 0 01111111 10000000    00000000 0000 000 (>> 2 at bit 9)
-   ----------- ---------
-res: 0 10000000 01100000    00000000 0000 000
+op1: 0 01111111 01000000 		00000000 0000 000
+op2: 0 01111111 10000000 		00000000 0000 000 (>> 2 at bit 9)
+	 ----------- ---------
+res: 0 10000000 01100000 		00000000 0000 000
 
 
 
-op1: 0 01111111 10000000    000000000000000
-op2: 0 01111111 01000000    000000000000000 (flip and +1)
-     0 01111111 01000000    000000000000000
-    ---------- ---------
-res: 0 01111101 00000000    000000000000000
+op1: 0 01111111 10000000 		000000000000000
+op2: 0 01111111 01000000 		000000000000000 (flip and +1)
+	   0 01111111 01000000 		000000000000000
+	  ---------- ---------
+res: 0 01111101 00000000 		000000000000000
 
 
- 1.25     00111111101000000000000000000000
-+1.50      00111111110000000000000000000000
- 2.75     01000000001100000000000000000000
+ 1.25  		00111111101000000000000000000000
++1.50 		 00111111110000000000000000000000
+ 2.75		  01000000001100000000000000000000
 
- 1.50      00111111110000000000000000000000
--1.25     00111111101000000000000000000000
- 0.25      00111110100000000000000000000000
+ 1.50 		 00111111110000000000000000000000
+-1.25  		00111111101000000000000000000000
+ 0.25 		 00111110100000000000000000000000
 */

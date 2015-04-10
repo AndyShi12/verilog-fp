@@ -9,7 +9,7 @@
 `timescale 1ns/10ps
 module tb_addsub();
 
-localparam	CLK_PERIOD	= 5;
+localparam	CLK_PERIOD	= 10;
 localparam	CHECK_DELAY = 1; 
 
 reg tb_clk, tb_nReset, tb_add_start, tb_add_done, tb_mode, tb_add_overflow;
@@ -48,57 +48,8 @@ initial
  	#(10*CHECK_DELAY);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// Same exponential
-
-
- 	
- 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 	
-    $display("\n10. ----------- neg/pos (same value) -----------");
-  @(negedge tb_clk);
-  tb_op1 = 32'b11000110000111000100001000111000;
-  tb_op2 = 32'b01000110000111000100001000111000;
-  #(CLK_PERIOD);
-  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
-  $display("correct result:              00000000000000000000000000000000");
- 	#(10*CHECK_DELAY);
- 	
- 	$display("\n11. ----------- neg/neg (same value) -----------");
-  @(negedge tb_clk);
-  tb_op1 = 32'b11000110000111000100001000111000;
-  tb_op2 = 32'b11000110000111000100001000111000;
-  #(CLK_PERIOD);
-  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
-  $display("correct result:              11000110100111000100001000111000");
- 	#(10*CHECK_DELAY);
- 	
-
-  
-  	////////////////////////////////////////////////////////////////////////////////////////////////////////////// Sub exponential
-
- 	
-	$display("\n\n12. ----------- pos/neg (same exp) 0.125 -----------");
-  @(negedge tb_clk);
-  tb_op1 = 32'b01000000100001000000000000000000;
-  tb_op2 = 32'b11000000100000000000000000000000;
-  #(CLK_PERIOD);
-  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
-  $display("correct result:              00111110000000000000000000000000");
- 	#(10*CHECK_DELAY);
- 	
- 	
- 	$display("\n\n13. ----------- neg/pos (same exp) -0.125 -----------");
-  @(negedge tb_clk);
-  tb_op1 = 32'b11000000100001000000000000000000;
-  tb_op2 = 32'b01000000100000000000000000000000;
-  #(CLK_PERIOD);
-  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
-  $display("correct result:              10111110000000000000000000000000");
- 	#(10*CHECK_DELAY);
- 	  
-
-  	////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-    
-  $display("\n\n14. ----------- pos/neg, larger exp -----------");
+/*
+$display("\n\n13. ----------- pos/neg, larger exp -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b01000100011101011100000000000000;
  	tb_op2 = 32'b11001010000111111110100110000010;
@@ -107,7 +58,8 @@ initial
   $display("correct result:              11001010000111111101101001111010");
   #(10*CHECK_DELAY);
   
-  $display("\n\n15. ----------- neg/pos, larger exp -----------");
+      
+  $display("\n\n14. ----------- neg/pos -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b11000100011101011100000000000000;
  	tb_op2 = 32'b01001010000111111110100110000010;
@@ -115,11 +67,35 @@ initial
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
   $display("correct result:              01001010000111111101101001111010");
   #(10*CHECK_DELAY);
+ */
+ 
+ 
+    
   
-  end
-endmodule 
+  $display("\n\n17. ----------- pos/neg -----------");
+  @(negedge tb_clk);
+  tb_op1 = 32'b01000100011101011100000000000000;
+ 	tb_op2 = 32'b11001010000111111110100110000010;
+  #(CLK_PERIOD);
+  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
+  $display("correct result:              01001010000111111101101001111010");
+  #(10*CHECK_DELAY);
+  
+ 
+  $display("\n\n16. ----------- neg/pos, larger exp -----------");
+  @(negedge tb_clk);
+  tb_op1 = 32'b01000100011101011100000000000000;
+ 	tb_op2 = 32'b11001010000111111110100110000010;
+  #(CLK_PERIOD);
+  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
+  $display("correct result:              01001010000111111101101001111010");
+  #(10*CHECK_DELAY);
+  	
+ 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+ 	  
 /*
+
   $display("\n2. ----------- pos/pos (same exp) -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b01000000001000000000000000000000;
@@ -210,4 +186,83 @@ endmodule
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
   $display("correct result:              01001010000111111111100011011110");
   #(10*CHECK_DELAY);
+  
+    $display("\n10. ----------- neg/pos (same value) -----------");
+  @(negedge tb_clk);
+  tb_op1 = 32'b11000110000111000100001000111000;
+  tb_op2 = 32'b01000110000111000100001000111000;
+  #(CLK_PERIOD);
+  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
+  $display("correct result:              00000000000000000000000000000000");
+ 	#(10*CHECK_DELAY);
+ 	
+ 	$display("\n11. ----------- neg/neg (same value) -----------");
+  @(negedge tb_clk);
+  tb_op1 = 32'b11000110000111000100001000111000;
+  tb_op2 = 32'b11000110000111000100001000111000;
+  #(CLK_PERIOD);
+  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
+  $display("correct result:              11000110100111000100001000111000");
+ 	#(10*CHECK_DELAY);
+
+
+ 	
+ 		$display("\n\n12. ----------- pos/neg (same exp) 0.125 -----------");
+  @(negedge tb_clk);
+  tb_op1 = 32'b01000000100001000000000000000000;
+  tb_op2 = 32'b11000000100000000000000000000000;
+  #(CLK_PERIOD);
+  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
+  $display("correct result:              00111110000000000000000000000000");
+ 	#(10*CHECK_DELAY);
+ 	
+ 	
+ 	$display("\n\n13. ----------- neg/pos (same exp) -0.125 -----------");
+  @(negedge tb_clk);
+  tb_op1 = 32'b11000000100001000000000000000000;
+  tb_op2 = 32'b01000000100000000000000000000000;
+  #(CLK_PERIOD);
+  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
+  $display("correct result:              10111110000000000000000000000000");
+ 	#(10*CHECK_DELAY);
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /*
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+    
+  
+  
+  	////////////////////////////////////////////////////////////////////////////////////////////////////////////// Sub exponential
+
+ 	
+
+    
+*/
+  
+  end
+endmodule 
