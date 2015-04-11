@@ -48,7 +48,6 @@ exp2 = op2[30:23];
 f1 = {1,op1[22:0]};
 f2 = {1,op2[22:0]};
 sign = 0;
-    
 ////////////// SAME EXPONENT //////////////////   
 if (exp1 == exp2) begin 
 $display("\n\n\n///////////////////// SAME EXP /////////////////////");
@@ -64,10 +63,9 @@ $display("\n\n\n///////////////////// SAME EXP /////////////////////");
         exp = exp1 + 1'b1;
    end
 
-
    //////////// POS/NEG  /////////////
    else if (op1[31] == 0 && op2[31] == 1) begin
-     $display("##############pos/neg");
+      $display("##############pos/neg");
       $display("op1 is %b, op2 is %b", op1, op2);
       if (f1 > f2)
         frac = f1-f2;
@@ -94,8 +92,8 @@ $display("\n\n\n///////////////////// SAME EXP /////////////////////");
    end
   //////////// NEG/POS /////////////
    else begin
-      $display("##############neg/pos");
-      $display("op1 is %b, op2 is %b", op1, op2);
+     $display("##############neg/pos");
+     $display("op1 is %b, op2 is %b", op1, op2);
        if (f1 > f2)
         frac = f1-f2;
        else
@@ -114,8 +112,6 @@ $display("\n\n\n///////////////////// SAME EXP /////////////////////");
        end
       $display("f1 is %b, f2 is %b, frac is %b", f1,f2,frac);
    end
-
-   
     ans = {sign, exp, frac[23:1]};
 
     //////////// SAME VALUE /////////////
@@ -128,41 +124,147 @@ end
 
 
 
-else if (op1[31] == 1 && op2[31] == 0) begin
-$display("\n\n\n///////////////////// NUM < DEMS /////////////////////");
+
+
+else if (exp1 > exp2) begin
+$display("\n\n\n///////////////////// NUM > DEMS /////////////////////");
+ sign = op1[31];
+ expDiff = exp1 - exp2;
+  $display("ORIGINAL f1 is %b, f2 is %b", f1, f2);
+  f2 = f2 >> expDiff;
+  exp = exp1;
+  $display("NEW f1 is %b, f2 is %b", f1, f2);
+  $display("exp1 = %b, exp2 = %b", exp1, exp2);
 
   if(op1[31] == op2[31]) begin
    $display("##############same sign");
+   frac = f1+f2;
+     frac = frac << 1;
+$display("frac is = %b", frac);
+
    end
    //////////// POS/NEG  /////////////
    else if (op1[31] == 0 && op2[31] == 1) begin
      $display("##############pos/neg");
+      $display("op1 is %b, op2 is %b", op1, op2);
+      if (f1 > f2)
+        frac = f1-f2;
+      else
+        frac = f2-f1;
+        
+        frac = frac << 2;
+        if (frac != 0) begin
+         while (frac[24] == 0) begin
+            frac = frac << 1;
+            exp = exp - 1'b1;
+         end
+          
+       end
+
+    frac = frac >> 1;
+
+       if(f1 < f2)
+          sign = 1;
+
+    $display("f1 is %b, f2 is %b, frac is %b", f1,f2,frac);
+
    end
   //////////// NEG/POS /////////////
    else begin
-      $display("##############neg/pos");
+     $display("##############neg/pos");
+      $display("op1 is %b, op2 is %b", op1, op2);
+       if (f1 > f2)
+        frac = f1-f2;
+       else
+        frac = f2-f1;
+      
+      if(f1 > f2)
+        sign = 1;
+
+         frac = frac << 1;
+        if (frac != 0) begin
+        
+        while (frac[24] == 0) begin
+             frac = frac << 1;
+             exp = exp - 1'b1;
+         end
+
+          //frac = frac << 1;
+       end
+      $display("f1 is %b, f2 is %b, frac is %b", f1,f2,frac);
    end
-    ans = 32'b0000;
+
+    ans = {sign, exp, frac[23:1]};
+    
 end
 
 
 
-
 else begin
-$display("\n\n\n///////////////////// NUM > DEM /////////////////////");
+$display("\n\n\n///////////////////// NUM < DEM /////////////////////");
+ sign = op2[31];
+ expDiff = exp2 - exp1;
+  $display("ORIGINAL f1 is %b, f2 is %b", f1, f2);
+  f1 = f1 >> expDiff;
+  exp = exp2;
+  $display("NEW f1 is %b, f2 is %b", f1, f2);
+  $display("exp1 = %b, exp2 = %b", exp1, exp2);
+
 
   if(op1[31] == op2[31]) begin
    $display("##############same sign");
+    frac = f1+f2;
+    $display("frac is = %b", frac);
+      frac = frac << 1;
+      sign = op1[31];
    end
    //////////// POS/NEG  /////////////
-   else if (op1[31] == 0 && op2[31] == 1) begin
-     $display("##############pos/neg");
+  else if (op1[31] == 0 && op2[31] == 1) begin
+      $display("##############pos/neg");
+      $display("op1 is %b, op2 is %b", op1, op2);
+      if (f1 > f2)
+        frac = f1-f2;
+      else
+        frac = f2-f1;
+
+        $display("fractional bit is %b", frac);
+        frac = frac << 1;
+        $display("fractional bit is now (shifted) %b", frac);
+        
+        if (frac != 0) begin
+         while (frac[24] == 0) begin
+            frac = frac << 1;
+            exp = exp - 1'b1;
+         end
+
+       end
+
+    $display("f1 is %b, f2 is %b, frac is %b", f1,f2,frac);
+
    end
   //////////// NEG/POS /////////////
    else begin
       $display("##############neg/pos");
+      $display("op1 is %b, op2 is %b", op1, op2);
+       if (f1 > f2)
+        frac = f1-f2;
+       else
+        frac = f2-f1;
+  
+        frac = frac << 1;
+        if (frac != 0) begin
+         while (frac[24] == 0) begin
+            frac = frac << 1;
+            exp = exp - 1'b1;
+         end
+  
+       end
+     $display("f1 is %b, f2 is %b, frac is %b", f1,f2,frac);
    end
-ans = 32'b0000;
+
+    ans = {sign, exp, frac[23:1]};
+
+// ans = {sign, exp, frac[23:1]};
 end
 
     
