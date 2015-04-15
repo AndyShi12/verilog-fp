@@ -47,7 +47,8 @@ initial
  	tb_nReset = 1;
  	#(10*CHECK_DELAY);
 
-////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
 $display("/////////////////////////////////// SAME EXPONENTS//////////////////////////////");
 
 $display("\n\n1. ----------- pos/pos -----------");
@@ -70,10 +71,10 @@ $display("\n\n2. ----------- neg/neg -----------");
   #(5*CHECK_DELAY);
   
 
-$display("\n\n3. ----------- pos/neg  = pos-----------");
+$display("\n\n3. -----------? pos/neg  = pos-----------");
   @(negedge tb_clk);
   tb_op1 =  $shortrealtobits(24.55);
-  tb_op2 =  $shortrealtobits((-1)*24.15);
+  tb_op2 =  $shortrealtobits(-24.15);
   #(CLK_PERIOD);
   $display("calculated result:  %b", tb_add_result);
   $display("correct result:     %b", $shortrealtobits(0.40));
@@ -126,11 +127,11 @@ $display("\n\n2. ----------- neg/neg -----------");
   tb_op2 =  $shortrealtobits(-5.55);
   #(CLK_PERIOD);
   $display("calculated result:  %b", tb_add_result);
-  $display("correct result:     %b", $shortrealtobits(55.8));
+  $display("correct result:     %b", $shortrealtobits(-55.8));
   #(5*CHECK_DELAY);
   
 
-$display("\n\n3. ----------- pos/neg  = pos-----------");
+$display("\n\n3. -----------! pos/neg  = pos-----------");
   @(negedge tb_clk);
   tb_op1 =  $shortrealtobits(500.55);
   tb_op2 =  $shortrealtobits(-4.15);
@@ -241,9 +242,6 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
 
 
 
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -266,7 +264,7 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("correct result:              11001010000111111101101000100110");
   #(10*CHECK_DELAY);
 
-/*
+
 
   $display("\n2. ----------- pos/pos (same exp) -----------");
   @(negedge tb_clk);
@@ -398,8 +396,7 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("correct result:              10111110000000000000000000000000");
   #(10*CHECK_DELAY);
 
-  */
-  	////////////////////////////////////////////////////////////////////////////////////////////////////////////// Sub exponential
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////// Sub exponential
   
   end
 endmodule 

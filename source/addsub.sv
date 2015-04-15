@@ -19,7 +19,7 @@ reg [7:0] exp1;
 reg [7:0] exp2;
 reg [7:0] expDiff;
 reg [7:0] exp;
-byte n, i;
+byte n, i, msbFound;
 reg [23:0] f1;
 reg [23:0] f2;
 reg [24:0] frac;
@@ -77,6 +77,7 @@ if (exp1 == exp2) begin
 
         frac = frac << 2;
         tempFrac = frac;
+        msbFound = 0;
     /*    if (frac != 0) begin
          while (frac[24] == 0) begin
             frac = frac << 1;
@@ -88,12 +89,12 @@ if (exp1 == exp2) begin
         if (frac != 0) begin
          for (n=0; n<24; n=n+1) begin
        //     $display("1111look iter = %d", n);
-            if(tempFrac[24-n] == 0) begin
+            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
                 frac = frac << 1;
                 exp = exp - 1'b1;
             end
             else
-                n = 100;
+               msbFound = 1;
           end
           exp = exp - 1'b1;
       end
@@ -121,15 +122,16 @@ if (exp1 == exp2) begin
          frac = frac << 2;
 
       tempFrac = frac;
+      msbFound = 0;
       if (frac != 0) begin
          for (n=0; n<24; n=n+1) begin
           //  $display("+++++look iter = %d", n);
-            if(tempFrac[24-n] == 0) begin
+            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
                 frac = frac << 1;
                 exp = exp - 1'b1;
             end
             else
-                n = 100;
+                msbFound = 1;
           end
           exp = exp - 1'b1;
       end
@@ -173,7 +175,7 @@ else if (exp1 > exp2) begin
   if(op1[31] == op2[31]) begin
   // $display("##############same sign");
   // $display("op1 = %b, op2 =%b", op1[31], op2[31]);
-   frac = f1+f2;
+     frac = f1+f2;
      frac = frac << 1;
 //$display("frac is = %b", frac);
 
@@ -182,6 +184,7 @@ else if (exp1 > exp2) begin
    else if (op1[31] == 0 && op2[31] == 1) begin
   //   $display("##############pos/neg");
   //    $display("op1 is %b, op2 is %b", op1, op2);
+    $display("AAAAAAAA");
       if (f1 > f2)
         frac = f1-f2;
       else
@@ -198,17 +201,17 @@ else if (exp1 > exp2) begin
       
 
      tempFrac = frac;
+     msbFound = 0;
       if (frac != 0) begin
          for (n=0; n<24; n=n+1) begin
         //    $display("2222look iter = %d", n);
-            if(tempFrac[24-n] == 0) begin
+             if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
                 frac = frac << 1;
                 exp = exp - 1'b1;
             end
             else
-                n = 100;
+              msbFound = 1;
           end
-          exp = exp - 1'b1;
       end
 
 
@@ -241,17 +244,17 @@ else if (exp1 > exp2) begin
          end
           //frac = frac << 1;
        end*/
-
+       msbFound = 0;
         tempFrac = frac;
       if (frac != 0) begin
          for (n=0; n<24; n=n+1) begin
           //  $display("???look iter = %d", n);
-            if(tempFrac[24-n] == 0) begin
+            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
                 frac = frac << 1;
                 exp = exp - 1'b1;
             end
             else
-                n = 100;
+                     msbFound = 1;
           end
   
       end
@@ -278,6 +281,7 @@ else begin
 
   if(op1[31] == op2[31]) begin
   // $display("##############same sign");
+  $display("CCCCC");
     frac = f1+f2;
   //  $display("frac is = %b", frac);
       frac = frac << 1;
@@ -285,6 +289,7 @@ else begin
    end
    //////////// POS/NEG  /////////////
   else if (op1[31] == 0 && op2[31] == 1) begin
+   $display("DDDDDDDD");
   //    $display("##############pos/neg");
   //    $display("op1 is %b, op2 is %b", op1, op2);
       if (f1 > f2)
@@ -304,15 +309,16 @@ else begin
        end*/
 
         tempFrac = frac;
+        msbFound = 0;
       if (frac != 0) begin
          for (n=0; n<24; n=n+1) begin
            // $display("???look iter = %d", n);
-            if(tempFrac[24-n] == 0) begin
+            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
                 frac = frac << 1;
                 exp = exp - 1'b1;
             end
             else
-                n = 100;
+                msbFound = 1;
           end
   
       end
@@ -322,6 +328,7 @@ else begin
    end
   //////////// NEG/POS /////////////
    else begin
+    $display("EEEEE");
      // $display("##############neg/pos");
     //  $display("op1 is %b, op2 is %b", op1, op2);
        if (f1 > f2)
@@ -340,15 +347,16 @@ else begin
        end*/
 
       tempFrac = frac;
+      msbFound=0;
       if (frac != 0) begin
          for (n=0; n<24; n=n+1) begin
             //$display("------look iter = %d", n);
-            if(tempFrac[24-n] == 0) begin
+            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
                 frac = frac << 1;
                 exp = exp - 1'b1;
             end
             else
-                n = 100;
+                msbFound = 1;
           end
       end
 
