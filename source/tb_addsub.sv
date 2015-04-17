@@ -9,10 +9,10 @@
 `timescale 1ns/10ps
 module tb_addsub();
 
-localparam	CLK_PERIOD	= 10;
-localparam	CHECK_DELAY = 1; 
+localparam	CLK_PERIOD	= 100;
+localparam	CHECK_DELAY = 1;
 
-reg tb_clk, tb_nReset, tb_add_start, tb_add_done, tb_mode, tb_add_overflow;
+reg tb_clk, tb_nReset, tb_add_start, tb_add_done, tb_mode, tb_add_overflow, tb_sign;
 reg [31:0] tb_op1;
 reg [31:0] tb_op2;
 reg [31:0] tb_add_result;
@@ -20,11 +20,13 @@ reg [7:0] exp1;
 reg [7:0] exp2;
 reg [7:0] expT;
 reg [7:0] expB;
+reg [7:0] tb_exp;
+reg [24:0] tb_frac;
   
 addsub ADDSUB(
   .clk(tb_clk), .n_rst(tb_nReset), .add_start(tb_add_start), 
   .mode(tb_mode), .op1(tb_op1), .op2(tb_op2), .add_result(tb_add_result),
-  .add_done(tb_add_done), .add_overflow(tb_add_overflow)
+  .add_done(tb_add_done), .add_overflow(tb_add_overflow),.sign(tb_sign),.exp(tb_exp), .frac(tb_frac)
   );
 
 always
@@ -44,10 +46,11 @@ initial
   $display("correct result:              00000000000000000000000000000000");
   #(CLK_PERIOD);
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
- 	tb_nReset = 1;
+
  	#(10*CHECK_DELAY);
 
 
+/*
 ///////////////////////////////////////////////////////////////////////////////
 $display("/////////////////////////////////// SAME EXPONENTS//////////////////////////////");
 
@@ -194,31 +197,7 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("calculated result:  %b", tb_add_result);
   $display("correct result:     %b", $shortrealtobits(-800.0));
   #(5*CHECK_DELAY);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 
 
@@ -244,17 +223,16 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   $display("\n\n14. ----------- neg/pos -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b11000100011101011100000000000000;
   tb_op2 = 32'b01001010000111111110100110000010;
+  tb_nReset = 1;
   #(CLK_PERIOD);
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
   $display("correct result:              01001010000111111101101000100110");
   #(10*CHECK_DELAY);
   
- 
   $display("\n\n16. ----------- neg/pos, larger exp -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b01000100011101011100000000000000;
@@ -263,8 +241,6 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
   $display("correct result:              11001010000111111101101000100110");
   #(10*CHECK_DELAY);
-
-
 
   $display("\n2. ----------- pos/pos (same exp) -----------");
   @(negedge tb_clk);
@@ -302,7 +278,6 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("correct result:              00000000000000000000000000000000");
   #(10*CHECK_DELAY);
   
-  
   $display("\n6. -----------pos/pos -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b01000001010010000000000000000000;
@@ -311,7 +286,6 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
   $display("correct result:              01000001111100000000000000000000\n\n");
   #(10*CHECK_DELAY);
-  
   
   @(negedge tb_clk);
   tb_op1 = 32'b01000100000010101110001110000101;
@@ -338,7 +312,6 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("correct result:              01000100010000100111000110111010");
   #(10*CHECK_DELAY);
   
-  
   $display("\n\n8. ----------- pos/pos, larger exp -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b01000100011101011100000000000000;
@@ -357,7 +330,7 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("correct result:              01001010000111111111100011011110");
   #(10*CHECK_DELAY);
   
-    $display("\n10. ----------- neg/pos (same value) -----------");
+  $display("\n10. ----------- neg/pos (same value) -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b11000110000111000100001000111000;
   tb_op2 = 32'b01000110000111000100001000111000;
@@ -375,9 +348,7 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("correct result:              11000110100111000100001000111000");
   #(10*CHECK_DELAY);
 
-
-  
-    $display("\n\n12. ----------- pos/neg (same exp) 0.125 -----------");
+  $display("\n\n12. ----------- pos/neg (same exp) 0.125 -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b01000000100001000000000000000000;
   tb_op2 = 32'b11000000100000000000000000000000;
@@ -385,7 +356,6 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
   $display("correct result:              00111110000000000000000000000000");
   #(10*CHECK_DELAY);
-  
   
   $display("\n\n13. ----------- neg/pos (same exp) -0.125 -----------");
   @(negedge tb_clk);
@@ -396,7 +366,5 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("correct result:              10111110000000000000000000000000");
   #(10*CHECK_DELAY);
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////// Sub exponential
-  
   end
 endmodule 
