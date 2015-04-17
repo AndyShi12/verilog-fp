@@ -7,42 +7,36 @@
 // Description: add and subtract module
 
 module addsub(
-input wire clk, n_rst, add_start, mode,
+input wire clk, n_rst,
 input reg [31:0] op1,
 input reg [31:0] op2,
 output reg [31:0] add_result,
-output reg add_done, add_overflow, sign,
-output reg [7:0] exp,
-output reg [24:0] frac
+output reg add_done, add_overflow
 );
 
-
+bit sign;
+reg [7:0] exp;
 reg [7:0] exp1;
 reg [7:0] exp2;
 reg [7:0] expDiff;
+reg [24:0] frac;
 byte n, i, msbFound;
 reg [23:0] f1;
 reg [23:0] f2;
 reg [24:0] tempFrac;
-reg [31:0] ans;
 
-always_ff @ (posedge clk, negedge n_rst) 
-begin
-    if (n_rst == 0) begin
-      add_result <= 0;
-      add_overflow <= 0;
-      add_done <= 0;
-    end
-    else begin
-      add_result <= ans;
-      add_overflow <= 0;
-      add_done <= 1;
-    end
-end
-  
+
+
 always_comb
 begin
     
+if (n_rst == 0) begin
+    add_result = 32'b00000000000000000000000000000000;
+    add_done = 0;
+    add_overflow = 1;
+end
+else begin
+
 exp1 = op1[30:23];
 exp2 = op2[30:23];
 f1 = {1,op1[22:0]};
@@ -120,11 +114,11 @@ if (exp1 == exp2) begin
       end
    //   $display("f1 is %b, f2 is %b, frac is %b", f1,f2,frac);
    end
-    ans = {sign, exp, frac[23:1]};
+    add_result = {sign, exp, frac[23:1]};
 
     //////////// SAME VALUE /////////////
     if ((op1[31] != op2[31]) && (f1 == f2)) begin
-      ans = 32'b0000;
+      add_result = 32'b0000;
     end 
 end
 
@@ -193,7 +187,7 @@ else if (exp1 > exp2) begin
           end
       end
    end
-    ans = {sign, exp, frac[23:1]};
+    add_result = {sign, exp, frac[23:1]};
 end
 
 else begin
@@ -253,7 +247,8 @@ else begin
       end
    end
 
-  ans = {sign, exp, frac[23:1]};
+  add_result = {sign, exp, frac[23:1]};
+end
 end
 end
 endmodule
