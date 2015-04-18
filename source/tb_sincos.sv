@@ -12,7 +12,7 @@ module tb_sincos();
 localparam	CLK_PERIOD	= 2.5;
 localparam	CHECK_DELAY = 1; 
 
-reg tb_clk, tb_nReset, tb_sine_start, tb_sine_done;
+reg tb_clk, tb_nReset, tb_sine_start, tb_done;
 reg [31:0] tb_opx;
 reg [31:0] tb_sine_result;
 reg [31:0] tb_cosine_result;
@@ -22,7 +22,7 @@ sincos SINCOS(
     .n_rst(tb_nReset),
     .sine_start(tb_sine_start),
     .opx(tb_opx),
-    .sine_done(tb_sine_done),
+    .sine_done(tb_done),
     .sine_result(tb_sine_result),
     .cosine_result(tb_cosine_result)
 );

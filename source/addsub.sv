@@ -15,15 +15,24 @@ output reg add_done, add_overflow
 );
 
 bit sign;
+byte n, i, msbFound;
 reg [7:0] exp;
 reg [7:0] exp1;
 reg [7:0] exp2;
 reg [7:0] expDiff;
 reg [24:0] frac;
-byte n, i, msbFound;
 reg [23:0] f1;
 reg [23:0] f2;
 reg [24:0] tempFrac;
+reg [7:0] tempExp;
+
+
+
+
+
+
+
+
 
 
 
@@ -37,11 +46,14 @@ if (n_rst == 0) begin
 end
 else begin
 
+
 exp1 = op1[30:23];
 exp2 = op2[30:23];
 f1 = {1,op1[22:0]};
 f2 = {1,op2[22:0]};
 sign = 0;
+
+
 ////////////// SAME EXPONENT //////////////////   
 if (exp1 == exp2) begin 
    exp = exp1;
@@ -67,20 +79,16 @@ if (exp1 == exp2) begin
         sign = 1;
 
         frac = frac << 2;
-        tempFrac = frac;
-        msbFound = 0;
+       
 
-        if (frac != 0) begin
-         for (n=0; n<24; n=n+1) begin
-            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
-                frac = frac << 1;
-                exp = exp - 1'b1;
-            end
-            else
-               msbFound = 1;
-          end
-          exp = exp - 1'b1;
-      end
+       
+tempFrac = frac;
+tempExp = exp;
+findMSB (tempFrac, tempExp, frac, exp);
+    exp = exp - 1'b1;
+
+
+ 
 
        if(f1 < f2)
           sign = 1;
@@ -98,20 +106,17 @@ if (exp1 == exp2) begin
 
          frac = frac << 2;
 
-      tempFrac = frac;
-      msbFound = 0;
-      if (frac != 0) begin
-         for (n=0; n<24; n=n+1) begin
-          //  $display("+++++look iter = %d", n);
-            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
-                frac = frac << 1;
-                exp = exp - 1'b1;
-            end
-            else
-                msbFound = 1;
-          end
-          exp = exp - 1'b1;
-      end
+
+
+  tempFrac = frac;
+tempExp = exp;
+findMSB (tempFrac, tempExp, frac, exp);
+
+    exp = exp - 1'b1;
+
+
+
+
    //   $display("f1 is %b, f2 is %b, frac is %b", f1,f2,frac);
    end
     add_result = {sign, exp, frac[23:1]};
@@ -147,16 +152,11 @@ else if (exp1 > exp2) begin
 
      tempFrac = frac;
      msbFound = 0;
-      if (frac != 0) begin
-         for (n=0; n<24; n=n+1) begin
-             if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
-                frac = frac << 1;
-                exp = exp - 1'b1;
-            end
-            else
-              msbFound = 1;
-          end
-      end
+
+ tempFrac = frac;
+tempExp = exp;
+findMSB (tempFrac, tempExp, frac, exp);
+
     frac = frac >> 1;
        if(f1 < f2)
           sign = 1;
@@ -171,21 +171,14 @@ else if (exp1 > exp2) begin
       if(f1 > f2)
         sign = 1;
 
-      frac = frac << 1;
-       msbFound = 0;
+       frac = frac << 1;
 
-        tempFrac = frac;
-      if (frac != 0) begin
-         for (n=0; n<24; n=n+1) begin
-          //  $display("???look iter = %d", n);
-            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
-                frac = frac << 1;
-                exp = exp - 1'b1;
-            end
-            else
-                     msbFound = 1;
-          end
-      end
+
+tempFrac = frac;
+tempExp = exp;
+findMSB (tempFrac, tempExp, frac, exp);
+
+     
    end
     add_result = {sign, exp, frac[23:1]};
 end
@@ -210,19 +203,14 @@ else begin
       else
         frac = f2-f1;
         frac = frac << 1;
-        tempFrac = frac;
-        msbFound = 0;
-      if (frac != 0) begin
-         for (n=0; n<24; n=n+1) begin
-           // $display("???look iter = %d", n);
-            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
-                frac = frac << 1;
-                exp = exp - 1'b1;
-            end
-            else
-                msbFound = 1;
-          end
-      end
+
+
+tempFrac = frac;
+tempExp = exp;
+findMSB (tempFrac, tempExp, frac, exp);
+
+
+
    end
   //////////// NEG/POS /////////////
    else begin
@@ -232,25 +220,47 @@ else begin
         frac = f2-f1;
   
         frac = frac << 1;
-      tempFrac = frac;
-      msbFound=0;
-      if (frac != 0) begin
-         for (n=0; n<24; n=n+1) begin
-            //$display("------look iter = %d", n);
-            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
-                frac = frac << 1;
-                exp = exp - 1'b1;
-            end
-            else
-                msbFound = 1;
-          end
-      end
+
+tempFrac = frac;
+tempExp = exp;
+findMSB (tempFrac, tempExp, frac, exp);
+
    end
 
   add_result = {sign, exp, frac[23:1]};
 end
 end
 end
-endmodule
 
+
+
+task findMSB(
+input reg [24:0] frac,
+input reg [7:0] exp,
+output reg [24:0] outFrac,
+output reg [7:0] outExp
+);
+
+begin
+reg [24:0] tempFrac;
+byte msbFound;
+tempFrac = frac;
+msbFound = 0;
+
+if (frac != 0) begin
+         for (n=0; n<24; n=n+1) begin
+            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
+                frac = frac << 1;
+                exp = exp - 1'b1;
+            end
+            else
+               msbFound = 1;
+         end
+ end
+outFrac = frac;
+outExp = exp;
+end
+endtask
+
+endmodule
 

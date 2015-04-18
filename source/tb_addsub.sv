@@ -46,10 +46,12 @@ initial
   #(10*CHECK_DELAY);
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
 
-/*
+
 ///////////////////////////////////////////////////////////////////////////////
 $display("/////////////////////////////////// SAME EXPONENTS//////////////////////////////");
+/*
 
+tb_nReset = 1;
 $display("\n\n1. ----------- pos/pos -----------");
   @(negedge tb_clk);
   tb_op1 =  $shortrealtobits(8.25);
@@ -192,13 +194,7 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   #(10*CHECK_DELAY);
   $display("calculated result:  %b", tb_add_result);
   $display("correct result:     %b", $shortrealtobits(-800.0));
-  
 */
-
-
-
-
-
 
 
 

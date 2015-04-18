@@ -7,11 +7,11 @@
 // Description: sine and cosine module
 
 module sincos(
-input wire clk, n_rst, sine_start,
+input wire clk, n_rst, 
 input reg [31:0] opx,
 output reg [31:0] sine_result,
 output reg [31:0] cosine_result,
-output reg sine_done
+output reg done
 );
 
 
@@ -34,7 +34,7 @@ begin
 if (n_rst == 0) begin
     sine_result = 0;
     cosine_result = 0;
-    sine_done = 1;
+    done = 1;
   end
 end
 
