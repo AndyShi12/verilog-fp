@@ -26,16 +26,6 @@ reg [23:0] f2;
 reg [24:0] tempFrac;
 reg [7:0] tempExp;
 
-
-
-
-
-
-
-
-
-
-
 always_comb
 begin
     
@@ -46,192 +36,113 @@ if (n_rst == 0) begin
 end
 else begin
 
-
 exp1 = op1[30:23];
 exp2 = op2[30:23];
 f1 = {1,op1[22:0]};
 f2 = {1,op2[22:0]};
 sign = 0;
 
-
 ////////////// SAME EXPONENT //////////////////   
-if (exp1 == exp2) begin 
+  if (exp1 == exp2) begin 
    exp = exp1;
-   sign = 0;
-
-   //////////// SAME SIGN  /////////////
-   if(op1[31] == op2[31]) begin
-  // $display("##############same sign");
-      frac = f1+f2;
-      sign = op1[31];
-        if (frac[24] == 1)
-        exp = exp1 + 1'b1;
-   end
-
-   //////////// POS/NEG  /////////////
-   else if (op1[31] == 0 && op2[31] == 1) begin
-      if (f1 > f2)
-        frac = f1-f2;
-      else
-        frac = f2-f1;
-
-      if(f1 < f2)
-        sign = 1;
-
-        frac = frac << 2;
-       
-
-       
-tempFrac = frac;
-tempExp = exp;
-findMSB (tempFrac, tempExp, frac, exp);
-    exp = exp - 1'b1;
-
-
- 
-
-       if(f1 < f2)
-          sign = 1;
-
-   end
-  //////////// NEG/POS /////////////
-   else begin
-       if (f1 > f2)
-        frac = f1-f2;
-       else
-        frac = f2-f1;
-      
-      if(f1 > f2)
-        sign = 1;
-
-         frac = frac << 2;
-
-
-
-  tempFrac = frac;
-tempExp = exp;
-findMSB (tempFrac, tempExp, frac, exp);
-
-    exp = exp - 1'b1;
-
-
-
-
-   //   $display("f1 is %b, f2 is %b, frac is %b", f1,f2,frac);
-   end
+  //////////// SAME SIGN  /////////////
+    if(op1[31] == op2[31]) begin
+        frac = f1+f2;
+        sign = op1[31];
+          if (frac[24] == 1)
+          exp = exp1 + 1'b1;
+    end
+    //////////// DIFF SIGN  /////////////
+    else begin
+        if (f1 > f2) begin
+          frac = f1-f2;
+              if (op1[31] == 1)
+                sign = 1;
+          end
+        else begin
+          frac = f2-f1;
+          if (op2[31] == 1)
+                sign = 1;
+        end
+      frac = frac << 2;
+      tempFrac = frac;
+      tempExp = exp;
+      findMSB (tempFrac, tempExp, frac, exp);
+      exp = exp - 1'b1;
+    end
     add_result = {sign, exp, frac[23:1]};
-
-    //////////// SAME VALUE /////////////
-    if ((op1[31] != op2[31]) && (f1 == f2)) begin
+    
+  //////////// SAME VALUE +/- /////////////
+  if ((op1[31] != op2[31]) && (f1 == f2)) begin
       add_result = 32'b0000;
-    end 
+  end 
 end
 
 
 else if (exp1 > exp2) begin
-//$display("\n\n\n///////////////////// NUM > DEMS /////////////////////");
+//$display("\n///////////////////// A > B /////////////////////");
  sign = op1[31];
- //$display("op1 is %b, op2 is %b", op1,op2);
  expDiff = exp1 - exp2;
- // $display("ORIGINAL f1 is %b, f2 is %b", f1, f2);
-  f2 = f2 >> expDiff;
-  exp = exp1;
-
+ f2 = f2 >> expDiff;
+ exp = exp1;
   if(op1[31] == op2[31]) begin
-     frac = f1+f2;
-     frac = frac << 1;
-   end
-   //////////// POS/NEG  /////////////
-   else if (op1[31] == 0 && op2[31] == 1) begin
-      if (f1 > f2)
-        frac = f1-f2;
-      else
-        frac = f2-f1;
-
-        frac = frac << 2;
-
-     tempFrac = frac;
-     msbFound = 0;
-
- tempFrac = frac;
-tempExp = exp;
-findMSB (tempFrac, tempExp, frac, exp);
-
-    frac = frac >> 1;
-       if(f1 < f2)
-          sign = 1;
-   end
-  //////////// NEG/POS /////////////
-   else begin
-       if (f1 > f2)
-        frac = f1-f2;
-       else
-        frac = f2-f1;
-      
-      if(f1 > f2)
-        sign = 1;
-
-       frac = frac << 1;
-
-
-tempFrac = frac;
-tempExp = exp;
-findMSB (tempFrac, tempExp, frac, exp);
-
-     
+        frac = f1+f2;
+        frac = frac << 1;
+    end
+    //////////// DIFF SIGN  /////////////
+    else begin
+          if (f1 > f2) begin
+          frac = f1-f2;
+              if (op1[31] == 1)
+                sign = 1;
+          end
+        else begin
+          frac = f2-f1;
+          if (op2[31] == 1)
+                sign = 1;
+        end
+ 
+  frac = frac << 1;
+  tempFrac = frac;
+  tempExp = exp;
+  findMSB (tempFrac, tempExp, frac, exp);
    end
     add_result = {sign, exp, frac[23:1]};
 end
 
 else begin
-//$display("\n\n\n///////////////////// NUM < DEM /////////////////////");
+//$display("\n\n\n///////////////////// A < B /////////////////////");
  sign = op2[31];
  expDiff = exp2 - exp1;
- // $display("ORIGINAL f1 is %b, f2 is %b", f1, f2);
-  f1 = f1 >> expDiff;
-  exp = exp2;
+ f1 = f1 >> expDiff;
+ exp = exp2;
 
-  if(op1[31] == op2[31]) begin
-    frac = f1+f2;
-      frac = frac << 1;
-      sign = op1[31];
-   end
-   //////////// POS/NEG  /////////////
-  else if (op1[31] == 0 && op2[31] == 1) begin
-      if (f1 > f2)
-        frac = f1-f2;
-      else
-        frac = f2-f1;
+ if(op1[31] == op2[31]) begin
+        frac = f1+f2;
         frac = frac << 1;
-
-
-tempFrac = frac;
-tempExp = exp;
-findMSB (tempFrac, tempExp, frac, exp);
-
-
-
-   end
-  //////////// NEG/POS /////////////
-   else begin
-       if (f1 > f2)
-        frac = f1-f2;
-       else
-        frac = f2-f1;
-  
-        frac = frac << 1;
-
-tempFrac = frac;
-tempExp = exp;
-findMSB (tempFrac, tempExp, frac, exp);
-
-   end
-
+    end
+    //////////// DIFF SIGN  /////////////
+    else begin
+          if (f1 > f2) begin
+          frac = f1-f2;
+              if (op1[31] == 1)
+                sign = 1;
+          end
+        else begin
+          frac = f2-f1;
+          if (op2[31] == 1)
+            sign = 1;
+        end
+ 
+  frac = frac << 1;
+  tempFrac = frac;
+  tempExp = exp;
+  findMSB (tempFrac, tempExp, frac, exp);
+  end
   add_result = {sign, exp, frac[23:1]};
 end
 end
 end
-
 
 
 task findMSB(
@@ -240,7 +151,6 @@ input reg [7:0] exp,
 output reg [24:0] outFrac,
 output reg [7:0] outExp
 );
-
 begin
 reg [24:0] tempFrac;
 byte msbFound;

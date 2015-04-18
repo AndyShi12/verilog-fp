@@ -29,24 +29,93 @@ reg [31:0] c4 = 32'b00110111110100000000110011111101;   // 1/40320
 reg [31:0] c5 = 32'b00110100100100111111001001111110;   // 1/3628800
 reg [31:0] c6 = 32'b00110001000011110111011011000111;   // 1/479001600
 
-always_ff @ (posedge clk, negedge n_rst) 
+always_comb
 begin
 if (n_rst == 0) begin
     sine_result = 0;
     cosine_result = 0;
     done = 1;
   end
-end
-
-
-always_comb
-begin
+  else begin
 
 $display("00110111101100111100110000000111 = %b", x);
 
 end
 
+end
+
+
+
+
+
+
+
+
+task findSum(
+input reg [31:0] op1,
+input reg [31:0] op2,
+output reg [31:0] add_result
+);
+begin
+reg [24:0] tempFrac;
+byte msbFound;
+tempFrac = frac;
+msbFound = 0;
+
+if (frac != 0) begin
+         for (n=0; n<24; n=n+1) begin
+            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
+                frac = frac << 1;
+                exp = exp - 1'b1;
+            end
+            else
+               msbFound = 1;
+         end
+ end
+outFrac = frac;
+outExp = exp;
+end
+endtask
+
+
+
+
+
+
+
+task findProduct(
+input reg [24:0] frac,
+input reg [7:0] exp,
+output reg [24:0] outFrac,
+output reg [7:0] outExp
+);
+begin
+reg [24:0] tempFrac;
+byte msbFound;
+tempFrac = frac;
+msbFound = 0;
+
+if (frac != 0) begin
+         for (n=0; n<24; n=n+1) begin
+            if((tempFrac[24-n] == 0) && (msbFound == 0)) begin
+                frac = frac << 1;
+                exp = exp - 1'b1;
+            end
+            else
+               msbFound = 1;
+         end
+ end
+outFrac = frac;
+outExp = exp;
+end
+endtask
+
+
+
 endmodule
+
+
+
 
 
 
