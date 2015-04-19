@@ -86,8 +86,10 @@ else if (exp1 > exp2) begin
  f2 = f2 >> expDiff;
  exp = exp1;
   if(op1[31] == op2[31]) begin
-        frac = f1+f2;
-        frac = frac << 1;
+         frac = f1+f2;
+         if (frac[24] == 1)
+          exp = exp1 + 1'b1;
+          frac = frac << 1;
     end
     //////////// DIFF SIGN  /////////////
     else begin
@@ -119,7 +121,10 @@ else begin
 
  if(op1[31] == op2[31]) begin
         frac = f1+f2;
-        frac = frac << 1;
+        
+         if (frac[24] == 1)
+          exp = exp1 + 1'b1;
+          frac = frac << 1;
     end
     //////////// DIFF SIGN  /////////////
     else begin

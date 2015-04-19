@@ -41,6 +41,10 @@ mul = m1 * m2;
 // determine sign
 sign = op1[31] ^ op2[31];
 // set result
+if(mul[47] == 1) begin
+	mul = mul >> 1;
+	exp = exp + 1'b1;
+end
 mul_result = {sign, exp, mul[45:23]}; 
 // send complete signal
 mul_done = 1;

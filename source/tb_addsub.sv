@@ -346,5 +346,29 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
   $display("correct result:              10111110000000000000000000000000");
 
+
+$display("\n\n13. ----------- neg/pos (same exp) -0.125 -----------");
+  @(negedge tb_clk);
+  tb_op1 = 32'b00111111110010010000111111011000;
+  tb_op2 = 32'b10111111001001010101110111100000;
+  #(10*CHECK_DELAY);
+  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
+  $display("correct result:              ?");
+
+
+  $display("\n\n13. ----------- neg/pos (same exp) -0.125 -----------");
+  @(negedge tb_clk);
+  tb_op1 = 32'b00111111011011001100000111010000;
+  tb_op2 = 32'b00111101101000110011010111011000;
+  #(10*CHECK_DELAY);
+  $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
+  $display("correct result:              ~1 ");
+
+  //0011111100000010010100010001011
+ // 00111111100000001001010001000101
+
+
+//findSum(32'b00111111011011001100000111010000, 32'b00111101101000110011010111011000, sine_result);
+
   end
 endmodule 

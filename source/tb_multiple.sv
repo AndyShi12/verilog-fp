@@ -91,6 +91,24 @@ initial
   #(CHECK_DELAY);
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
  
+ $display("\n\n----------- pi/4^2 -----------");
+  @(negedge tb_clk);
+  tb_op1 = 32'b00111111010010010000111111011011;
+  tb_op2 = 32'b00111111010010010000111111011011;
+  $display("correct result:              ?");  
+  #(CHECK_DELAY);
+  $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
+ 
+
+  $display("\n\n----------- 0.36685002^2 -----------");
+  @(negedge tb_clk);
+  tb_op1 = 32'b00111110101110111101001111000100;
+  tb_op2 = 32'b00111110101110111101001111000100;
+  $display("correct result:              ?");  
+  #(CHECK_DELAY);
+  $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
+ 
+
 
   end
 endmodule 
