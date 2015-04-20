@@ -17,7 +17,6 @@ reg [31:0] tb_opx;
 reg [31:0] tb_sine_result;
 reg [31:0] tb_cosine_result;
 
-
 sincos SINCOS(
     .clk(tb_clk), 
     .n_rst(tb_nReset),
@@ -39,8 +38,24 @@ always
 initial
   begin
 	
+
+
+/*
+$display("\n----------- pi/4 -----------");
+  @(negedge tb_clk);
+  tb_opx = 32'b00111111010010010000111111011000;
+  $display("correct result:                0.707106, 0.707106 ");
+  //$display("correct result:              00111111111100000000000000000000");
+  #(CLK_PERIOD);
+  $display("done:    %b, sine result:    %f", tb_sine_result, $bitstoshortreal(tb_sine_result));
+  $display("done:    %b, cosine result:  %f", tb_cosine_result, $bitstoshortreal(tb_cosine_result));
+  #(10*CHECK_DELAY);
+  */
+
+end
+endmodule
 	
-	endmodule
+	
 	/*
   $display("----------- reset -----------");
   @(negedge tb_clk);
