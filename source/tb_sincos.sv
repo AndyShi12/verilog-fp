@@ -36,14 +36,25 @@ always
 
 initial
   begin
+
+
+  $display("----------- reset -----------");
+
+  tb_nReset = 0;
+  $display("correct result:              00000000000000000000000000000000");
+  $display("done:     sine result:      %b", tb_sine_result);
+  $display("done:     cosine result:    %b", tb_cosine_result);
+  tb_nReset = 1;
+  #(10*CHECK_DELAY);
 	
 $display("\n----------- pi/4 -----------");
+  @(negedge tb_clk);
   tb_opx = 32'b00111111010010010000111111011000;
   $display("correct result:              0.707106, 0.707106 ");
   $display("correct result:              00111111001101010000010011100110");
   #(5*CHECK_DELAY);
-  $display("done:    %b, sine result:    %f", tb_sine_result, $bitstoshortreal(tb_sine_result));
-  $display("done:    %b, cosine result:  %f", tb_cosine_result, $bitstoshortreal(tb_cosine_result));
+  $display("done:     sine result:      %b", tb_sine_result);
+  $display("done:     cosine result:    %b", tb_cosine_result);
 
 $display("\n----------- pi/2 -----------");
   @(negedge tb_clk);
@@ -51,18 +62,9 @@ $display("\n----------- pi/2 -----------");
   $display("correct result:                1.0, 0.0 ");
   $display("correct result:              00111111100000000000000000000000, 0");
   #(CLK_PERIOD);
-  $display("done:    %b, sine result:    %f", tb_sine_result, $bitstoshortreal(tb_sine_result));
-  $display("done:    %b, cosine result:  %f", tb_cosine_result, $bitstoshortreal(tb_cosine_result));
+  $display("done:     sine result:      %b", tb_sine_result);
+  $display("done:     cosine result:    %b", tb_cosine_result);
   #(10*CHECK_DELAY);
-
-  $display("\n----------- 3pi/2 -----------");
-  @(negedge tb_clk);
-  tb_opx = 32'b01000000100101101100101111100100;
-  $display("correct result:                -1.0, 0.0");
-  $display("correct result:              10111111100000000000000000000000, 0 ");
-  #(CLK_PERIOD);
-  $display("done:    %b, sine result:    %f", tb_sine_result, $bitstoshortreal(tb_sine_result));
-  $display("done:    %b, cosine result:  %f", tb_cosine_result, $bitstoshortreal(tb_cosine_result));
 
 $display("\n----------- pi -----------");
   @(negedge tb_clk);
@@ -70,42 +72,11 @@ $display("\n----------- pi -----------");
   $display("correct result:                0.0, -1.0");
   $display("correct result:              0, 10111111100000000000000000000000 ");
   #(CLK_PERIOD);
-  $display("done:    %b, sine result:    %f", tb_sine_result, $bitstoshortreal(tb_sine_result));
-  $display("done:    %b, cosine result:  %f", tb_cosine_result, $bitstoshortreal(tb_cosine_result));
- 
-
-	
-
-  $display("----------- reset -----------");
-  @(negedge tb_clk);
-  tb_nReset = 0;
-  $display("correct result:              00000000000000000000000000000000");
-  #(CLK_PERIOD);
-  $display("done:    %b, sine result:    %f", tb_sine_result, $bitstoshortreal(tb_sine_result));
-  $display("done:    %b, cosine result:  %f", tb_cosine_result, $bitstoshortreal(tb_cosine_result));
-  tb_nReset = 1;
+  $display("done:     sine result:      %b", tb_sine_result);
+  $display("done:     cosine result:    %b", tb_cosine_result);
   #(10*CHECK_DELAY);
  
-  $display("\n----------- pi/4 -----------");
-  @(negedge tb_clk);
-  tb_opx = 32'b00111111010010010000111111011000;
-  $display("correct result:                0.707106, 0.707106 ");
-  //$display("correct result:              00111111111100000000000000000000");
-  #(CLK_PERIOD);
-  $display("done:    %b, sine result:    %f", tb_sine_result, $bitstoshortreal(tb_sine_result));
-  $display("done:    %b, cosine result:  %f", tb_cosine_result, $bitstoshortreal(tb_cosine_result));
-  #(10*CHECK_DELAY);
- 
-  $display("\n----------- pi/2 -----------");
-  @(negedge tb_clk);
-  tb_opx = 32'b00111111110010010000111111011000;
-  $display("correct result:                1.0, 0.0 ");
-  //$display("correct result:              00111111111100000000000000000000");
-  #(CLK_PERIOD);
-  $display("done:    %b, sine result:    %f", tb_sine_result, $bitstoshortreal(tb_sine_result));
-  $display("done:    %b, cosine result:  %f", tb_cosine_result, $bitstoshortreal(tb_cosine_result));
-  #(10*CHECK_DELAY);
- 
+ /*
   $display("\n----------- 3pi/2 -----------");
   @(negedge tb_clk);
   tb_opx = 32'b01000000100101101100101111100100;
@@ -137,6 +108,6 @@ $display("\n----------- pi -----------");
   $display("done:    %b, cosine result:  %f", tb_cosine_result, $bitstoshortreal(tb_cosine_result));
   #(10*CHECK_DELAY);
 
-
+*/
   end
 endmodule

@@ -9,18 +9,13 @@
 `timescale 1ns/10ps
 module tb_addsub();
 
-localparam	CLK_PERIOD	= 100;
-localparam	CHECK_DELAY = 10;
+localparam	CLK_PERIOD	= 4;
+localparam	CHECK_DELAY = 2;
 
 reg tb_clk, tb_nReset, tb_add_done,  tb_add_overflow, tb_sign;
 reg [31:0] tb_op1;
 reg [31:0] tb_op2;
 reg [31:0] tb_add_result;
-
-reg [7:0] exp1;
-reg [7:0] exp2;
-reg [7:0] expT;
-reg [7:0] expB;
 
 addsub ADDSUB(
   .clk(tb_clk), .n_rst(tb_nReset), 
@@ -329,15 +324,14 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
   $display("correct result:              11000110100111000100001000111000");
 
-  $display("\n\n12. ----------- pos/neg (same exp) 0.125 -----------");
+/*  $display("\n\n12. ----------- pos/neg (same exp) 0.125 -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b01000000100001000000000000000000;
   tb_op2 = 32'b11000000100000000000000000000000;
   #(10*CHECK_DELAY);
   $display("done: %b, calculated result:  %b", tb_add_done, tb_add_result);
   $display("correct result:              00111110000000000000000000000000");
-
-
+*/
   $display("\n\n13. ----------- neg/pos (same exp) -0.125 -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b11000000100001000000000000000000;
