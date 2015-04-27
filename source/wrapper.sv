@@ -38,7 +38,7 @@ module wrapper(
   reg add_result;
   
   // Multiply
-  reg mul_result
+  reg mul_result;
   reg mul_done;
   reg mul_overflow;
   
@@ -48,7 +48,7 @@ module wrapper(
   reg sincos_done;
   
   // Output Decode
-  reg fifo_out
+  reg fifo_out;
   
   indecode INPUT(
   .clk(clk),
