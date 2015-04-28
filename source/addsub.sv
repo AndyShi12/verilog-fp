@@ -45,6 +45,7 @@ sign = 0;
 ////////////// SAME EXPONENT //////////////////   
   if (exp1 == exp2) begin 
    exp = exp1;
+
   //////////// SAME SIGN  /////////////
     if(op1[31] == op2[31]) begin
         frac = f1+f2;
