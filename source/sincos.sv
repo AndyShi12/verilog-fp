@@ -46,8 +46,8 @@ reg [31:0] tempResult;
 always_comb
 begin
 if (n_rst == 0) begin
-    sine_result = 32'b0;
-    cosine_result = 32'b0;
+    sine_result =   32'b00000000000000000000000000000000;
+    cosine_result = 32'b00000000000000000000000000000000;
     done = 1;
   end
 else begin
@@ -100,7 +100,7 @@ findProduct(sP5, 32'b10110010110101110011001000101011, sP5);
 //$display("\n\n\n/////////////////////////////////");
 findSum(opx, sP1, sine_result);
 //$display("opx is %f + sP1: %f = ",$bitstoshortreal(opx), $bitstoshortreal(sP1));
-$display("sine result is %f",$bitstoshortreal(sine_result));
+//$display("sine result is %f",$bitstoshortreal(sine_result));
 
 //tempResult = sine_result;
 //$display("---> temp result is %b, sP2 is %b",tempResult,sP2);
@@ -108,22 +108,22 @@ $display("sine result is %f",$bitstoshortreal(sine_result));
 findSum(sine_result, sP2, sine_result);
 //$display("---> sine result is %f",$bitstoshortreal(sine_result));
 //$display("result is %f + sP2 (+x^5/120): %f = ",$bitstoshortreal(sine_result), $bitstoshortreal(sP2));
-$display("sine result is %f",$bitstoshortreal(sine_result));
+//$display("sine result is %f",$bitstoshortreal(sine_result));
 
 //tempResult = sine_result;
 findSum(sine_result, sP3, sine_result);
 //$display("result is %f + sP3 (-x^7/5040): %f = ",$bitstoshortreal(sine_result), $bitstoshortreal(sP2));
-$display("sine result is %f",$bitstoshortreal(sine_result));
+//$display("sine result is %f",$bitstoshortreal(sine_result));
 
 //tempResult = sine_result;
 findSum(sine_result, sP4, sine_result);
 //$display("result is %f + sP4: %f = ",$bitstoshortreal(sine_result), $bitstoshortreal(sP4));
-$display("sine result is %f",$bitstoshortreal(sine_result));
+//$display("sine result is %f",$bitstoshortreal(sine_result));
 
 //tempResult = sine_result;
 findSum(sine_result, sP5, sine_result);
 //$display("result is %f + sP4: %f = ",$bitstoshortreal(sine_result), $bitstoshortreal(sP5));
-$display("sine result is %f",$bitstoshortreal(sine_result));
+//$display("sine result is %f",$bitstoshortreal(sine_result));
 //$display("\n\n\n/////////////////////////////////");
 
 ///////////////////////////////////////////// Cos

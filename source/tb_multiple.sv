@@ -10,7 +10,7 @@
 module tb_multiple();
 
 localparam	CLK_PERIOD	= 4ns;
-localparam	CHECK_DELAY = 2ns;
+localparam	CHECK_DELAY = 2git pns;
 
 reg tb_clk, tb_nReset, tb_mul_start, tb_mul_done, tb_mul_overflow;
 reg [31:0] tb_op1;

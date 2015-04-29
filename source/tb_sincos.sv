@@ -9,7 +9,7 @@
 `timescale 1ns/1ns
 module tb_sincos();
 
-localparam	CLK_PERIOD	= 1000;
+localparam	CLK_PERIOD	= 500;
 localparam	CHECK_DELAY = 100; 
 
 reg tb_clk, tb_nReset, tb_sine_start, tb_done;
@@ -39,13 +39,12 @@ initial
 
 
   $display("----------- reset -----------");
-
   tb_nReset = 0;
   $display("correct result:              00000000000000000000000000000000");
   $display("done:     sine result:      %b", tb_sine_result);
   $display("done:     cosine result:    %b", tb_cosine_result);
   tb_nReset = 1;
-  #(10*CHECK_DELAY);
+  #(5*CHECK_DELAY);
 	
 $display("\n----------- pi/4 -----------");
   @(negedge tb_clk);
@@ -61,21 +60,19 @@ $display("\n----------- pi/2 -----------");
   tb_opx = 32'b00111111110010010000111111011000;
   $display("correct result:                1.0, 0.0 ");
   $display("correct result:              00111111100000000000000000000000, 0");
-  #(CLK_PERIOD);
+    #(5*CHECK_DELAY);
   $display("done:     sine result:      %b", tb_sine_result);
   $display("done:     cosine result:    %b", tb_cosine_result);
-  #(10*CHECK_DELAY);
+
 
 $display("\n----------- pi -----------");
   @(negedge tb_clk);
   tb_opx = 32'b01000000010010010000111111011010;
   $display("correct result:                0.0, -1.0");
   $display("correct result:              0, 10111111100000000000000000000000 ");
-  #(CLK_PERIOD);
+  #(5*CHECK_DELAY);
   $display("done:     sine result:      %b", tb_sine_result);
-  $display("done:     cosine result:    %b", tb_cosine_result);
-  #(10*CHECK_DELAY);
- 
+  $display("done:     cosine result:    %b", tb_cosine_result); 
  /*
   $display("\n----------- 3pi/2 -----------");
   @(negedge tb_clk);
