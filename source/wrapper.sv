@@ -35,20 +35,21 @@ module wrapper(
   // Addition/Subtraction
   reg add_done;
   reg add_overflow;
-  reg add_result;
+  reg [31:0] add_result;
   
   // Multiply
-  reg mul_result;
+  reg [31:0] mul_result;
   reg mul_done;
   reg mul_overflow;
   
   // Sine/Cosine
-  reg sine_result;
-  reg cosine_result;
+  reg [31:0] sine_result;
+  reg [31:0] cosine_result;
   reg sincos_done;
+  reg [31:0] opx;
   
   // Output Decode
-  reg fifo_out;
+  reg [2:0] fifo_out;
   
   indecode INPUT(
   .clk(clk),
@@ -58,6 +59,8 @@ module wrapper(
   .op2(op2),
   .op_sel(op_sel),
   .out_fifo_hold(out_fifo_hold),
+  .op1_out(op1_out),
+  .op2_out(op2_out),
   .add_busy(add_busy),
   .mul_busy(mul_busy),
   .sine_busy(sine_busy),
@@ -81,6 +84,7 @@ module wrapper(
   multiple MUL(
   .clk(clk),
   .n_rst(n_rst),
+  .mul_start(mul_start),
   .op1(op1_out),
   .op2(op2_out),
   .mul_result(mul_result),
