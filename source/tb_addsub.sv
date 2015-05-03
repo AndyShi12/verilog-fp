@@ -12,7 +12,7 @@ module tb_addsub();
 localparam	CLK_PERIOD	= 4;
 localparam	CHECK_DELAY = 2;
 
-reg tb_clk, tb_nReset, tb_add_done,  tb_add_overflow, tb_sign, tb_add_start, tb_add_serv, tb_busy;
+reg tb_clk, tb_nReset, tb_add_done, tb_sign, tb_add_start, tb_add_serv, tb_busy;
 reg [31:0] tb_op1;
 reg [31:0] tb_op2;
 reg [31:0] tb_add_result;

@@ -12,7 +12,7 @@ input reg mul_serv,
 input reg [31:0] op1,
 input reg [31:0] op2,
 output reg [31:0] mul_result,
-output reg mul_done, mul_overflow, mul_busy
+output reg mul_done, mul_busy
 );
 
 bit sign;
@@ -26,7 +26,7 @@ begin
 if (n_rst == 0) begin
     mul_result = 32'b00000000000000000000000000000000;
     mul_done = 0;
-    mul_overflow = 1;
+
 end
 else begin
 // send start signal
@@ -50,7 +50,6 @@ mul_result = {sign, exp, mul[45:23]};
 // send complete signal
 mul_done = 1;
 mul_busy = 0;
-mul_overflow = 0;
 end
 end
 
