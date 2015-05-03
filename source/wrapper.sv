@@ -20,7 +20,7 @@ module wrapper(
   
   // Input Decode
   reg op_strobe;
-  reg out_fifo_hold;
+  reg in_fifo_hold;
   reg add_busy;
   reg mul_busy;
   reg sine_busy;
@@ -49,6 +49,9 @@ module wrapper(
   reg [31:0] opx;
   
   // Output Decode
+  reg cpu_pop;
+  reg out_fifo_hold;
+  reg op_fifo_pop;
   reg [2:0] fifo_out;
   
   indecode INPUT(
@@ -58,7 +61,7 @@ module wrapper(
   .op1(op1),
   .op2(op2),
   .op_sel(op_sel),
-  .out_fifo_hold(out_fifo_hold),
+  .out_fifo_hold(in_fifo_hold),
   .op1_out(op1_out),
   .op2_out(op2_out),
   .add_busy(add_busy),
@@ -102,6 +105,8 @@ module wrapper(
   );
   
   outdecode OUTPUT(
+  .clk(clk),
+  .n_rst(n_rst),
   .add_result(add_result),
   .mul_result(mul_result),
   .sine_result(sine_result),
@@ -110,10 +115,13 @@ module wrapper(
   .sine_done(sine_done),
   .add_overflow(add_overflow),
   .mul_overflow(mul_overflow),
+  .cpu_pop(cpu_pop),
   .fifo_out(fifo_out),
   .result(result),
   .done(done),
-  .overflow(overflow)
+  .overflow(overflow),
+  .out_fifo_hold(out_fifo_hold),
+  .op_fifo_pop(op_fifo_pop)
   );
   
   
