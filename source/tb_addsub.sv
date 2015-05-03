@@ -12,7 +12,7 @@ module tb_addsub();
 localparam	CLK_PERIOD	= 4;
 localparam	CHECK_DELAY = 2;
 
-reg tb_clk, tb_nReset, tb_add_done,  tb_add_overflow, tb_sign;
+reg tb_clk, tb_nReset, tb_add_done,  tb_add_overflow, tb_sign, tb_add_start, tb_add_serv, tb_busy;
 reg [31:0] tb_op1;
 reg [31:0] tb_op2;
 reg [31:0] tb_add_result;
@@ -20,7 +20,7 @@ reg [31:0] tb_add_result;
 addsub ADDSUB(
   .clk(tb_clk), .n_rst(tb_nReset), 
   .op1(tb_op1), .op2(tb_op2), .add_result(tb_add_result),
-  .add_done(tb_add_done), .add_overflow(tb_add_overflow)
+  .add_done(tb_add_done), .add_overflow(tb_add_overflow), .add_start(tb_add_start), .add_serv(tb_add_serv), .add_busy(tb_busy)
   );
 
 always
@@ -187,15 +187,7 @@ $display("\n\n3. ----------- pos/neg = neg-----------");
   #(10*CHECK_DELAY);
   $display("calculated result:  %b", tb_add_result);
   $display("correct result:     %b", $shortrealtobits(-800.0));
-
-
 */
-
-
-
-
-
-
 
 
 

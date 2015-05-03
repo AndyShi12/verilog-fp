@@ -8,10 +8,11 @@
 
 module addsub(
 input wire clk, n_rst,
+input reg add_serv,
 input reg [31:0] op1,
 input reg [31:0] op2,
 output reg [31:0] add_result,
-output reg add_done, add_overflow
+output reg add_done, add_start, add_overflow, add_busy
 );
 
 bit sign;
@@ -27,8 +28,7 @@ reg [24:0] tempFrac;
 reg [7:0] tempExp;
 
 always_comb
-begin
-    
+begin    
 if (n_rst == 0) begin
     add_result = 32'b00000000000000000000000000000000;
     add_done = 0;

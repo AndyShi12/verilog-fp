@@ -8,10 +8,11 @@
 
 module multiple(
 input wire clk, n_rst, mul_start,
+input reg mul_serv,
 input reg [31:0] op1,
 input reg [31:0] op2,
 output reg [31:0] mul_result,
-output reg mul_done, mul_overflow
+output reg mul_done, mul_overflow, mul_busy
 );
 
 bit sign;
@@ -28,14 +29,14 @@ if (n_rst == 0) begin
     mul_overflow = 1;
 end
 else begin
-
 // send start signal
 mul_done = 0;
+mul_busy = 1;
 // determine exponent
 exp = op1[30:23] + op2[30:23];
 exp = exp - 8'b01111111;
 // determine mantissa
-m1 = {1,op1[22:0]};   
+m1 = {1,op1[22:0]};
 m2 = {1,op2[22:0]};
 mul = m1 * m2;
 // determine sign
@@ -48,6 +49,7 @@ end
 mul_result = {sign, exp, mul[45:23]}; 
 // send complete signal
 mul_done = 1;
+mul_busy = 0;
 mul_overflow = 0;
 end
 end
