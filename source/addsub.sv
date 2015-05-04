@@ -9,10 +9,11 @@
 module addsub(
 input wire clk, n_rst,
 input reg add_serv,
+input reg add_start,
 input reg [31:0] op1,
 input reg [31:0] op2,
 output reg [31:0] add_result,
-output reg add_done, add_start, add_busy
+output reg add_done, add_busy
 );
 
 bit sign;
@@ -26,12 +27,83 @@ reg [23:0] f1;
 reg [23:0] f2;
 reg [24:0] tempFrac;
 reg [7:0] tempExp;
+reg [2:0] count;
+reg run;
+reg done;
+reg [2:0] next;
+
+always @ (posedge clk, negedge n_rst)
+begin
+  if(~n_rst) begin
+    count <= 0;
+    add_done <= 0;
+  end else begin
+    count <= next;
+    if(add_done) begin
+      if(add_serv) begin
+        add_done <= 0;
+      end else begin
+        add_done <= 1;
+      end
+    end else begin
+      add_done <= done;
+    end
+  end
+end
+
+always_comb
+begin
+  case(count)
+    0:
+  begin
+    add_busy = 0;
+    done = 0;
+    if(add_start) begin
+      next = 1;
+    end else begin
+      next = 0;
+    end
+  end
+    1:
+  begin
+    next = 2;
+    add_busy = 1;
+    done = 0;
+  end
+    2:
+  begin
+    next = 3;
+    add_busy = 1;
+    done = 0;
+  end
+    3:
+  begin
+    next = 4;
+    add_busy = 1;
+    done = 0;
+  end
+    4:
+  begin
+    next = 5;
+    add_busy = 1;
+    done = 0;
+  end
+    5:
+  begin
+    next = 0;
+    add_busy = 1;
+    done = 1;
+  end
+endcase
+end
+
+
+
 
 always_comb
 begin    
 if (n_rst == 0) begin
     add_result = 32'b00000000000000000000000000000000;
-    add_done = 0;
 end
 else begin
 

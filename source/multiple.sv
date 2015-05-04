@@ -20,18 +20,83 @@ reg [23:0] m1;
 reg [23:0] m2;
 reg [7:0] exp;
 reg [47:0] mul;
+reg [2:0] count;
+reg done;
+reg [2:0] next;
+
+always @ (posedge clk, negedge n_rst)
+begin
+  if(~n_rst) begin
+    count <= 0;
+    mul_done <= 0;
+  end else begin
+    count <= next;
+    if(mul_done) begin
+      if(mul_serv) begin
+        mul_done <= 0;
+      end else begin
+        mul_done <= 1;
+      end
+    end else begin
+      mul_done <= done;
+    end
+  end
+end
+
+always_comb
+begin
+  case(count)
+    0:
+  begin
+    mul_busy = 0;
+    done = 0;
+    if(mul_start) begin
+      next = 1;
+    end else begin
+      next = 0;
+    end
+  end
+    1:
+  begin
+    next = 2;
+    mul_busy = 1;
+    done = 0;
+  end
+    2:
+  begin
+    next = 3;
+    mul_busy = 1;
+    done = 0;
+  end
+    3:
+  begin
+    next = 4;
+    mul_busy = 1;
+    done = 0;
+  end
+    4:
+  begin
+    next = 5;
+    mul_busy = 1;
+    done = 0;
+  end
+    5:
+  begin
+    next = 0;
+    mul_busy = 1;
+    done = 1;
+  end
+endcase
+end
 
 always_comb
 begin
 if (n_rst == 0) begin
     mul_result = 32'b00000000000000000000000000000000;
-    mul_done = 0;
 
 end
 else begin
 // send start signal
-mul_done = 0;
-mul_busy = 1;
 // determine exponent
 exp = op1[30:23] + op2[30:23];
 exp = exp - 8'b01111111;
@@ -48,8 +113,6 @@ if(mul[47] == 1) begin
 end
 mul_result = {sign, exp, mul[45:23]}; 
 // send complete signal
-mul_done = 1;
-mul_busy = 0;
 end
 end
 
