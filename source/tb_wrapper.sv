@@ -19,8 +19,7 @@ module tb_wrapper();
   reg [31:0] tb_op2;
   reg [2:0] tb_op_sel;
   reg [31:0] tb_result;
-  reg tb_done;
-  reg tb_overflow;
+  reg tb_cpu_pop;
   reg tb_op_strobe;
   
   wrapper DUT(
@@ -30,10 +29,11 @@ module tb_wrapper();
   .op2(tb_op2),
   .op_sel(tb_op_sel),
   .result(tb_result),
-  .done(tb_done),
-  .overflow(tb_overflow)
+  .op_strobe(tb_op_strobe),
+  .cpu_pop(tb_cpu_pop)
   );
-  
+
+//clock generation
 always
 	begin
 		tb_clk = 1'b0;
@@ -41,10 +41,97 @@ always
 		tb_clk = 1'b1;
 		#(CLK_PERIOD/2.0);
 	end
-  
+
+//automate push process
+task push;
+  input [31:0]t_op1;
+  input [31:0]t_op2;
+  input [2:0]t_opsel;
+
+  tb_op1 = t_op1;
+  tb_op2 = t_op2;
+  tb_op_sel = t_opsel;
+
+  @(negedge tb_clk);
+  tb_op_strobe = 1;
+  #3;
+  tb_op_strobe = 0;
+  #1;
+endtask
+
+//automate pop process
+task pop;
+  @(negedge tb_clk);
+  tb_cpu_pop = 1;
+  #3;
+  tb_cpu_pop = 0;
+  #1;
+endtask
+
+
 initial
-  begin
+begin
+    $display("Power on Reset, waiting...");
+    tb_n_rst = 0;
+    tb_cpu_pop = 0;
+    tb_op_strobe = 0;
+    #4
+    tb_n_rst = 1;
+    $display("Queing Add operation...");
+    @(negedge tb_clk);
+    push(32'b11000100011101011100000000000000,32'b01001010000111111110100110000010, 3'b001);
+    $display("Queing Add operation...");
+    #12;
+    @(negedge tb_clk);
+    push(32'b01000100011101011100000000000000,32'b11001010000111111110100110000010, 3'b001);
+    $display("Queing Mul operation...");
+    #12;
+    @(negedge tb_clk);
+    push(32'b00111111101000000000000000000000,32'b00111111110000000000000000000000, 3'b011);
+    $display("Queing Add operation...");
+    #12;
+    @(negedge tb_clk);
+    push(32'b11000100011101011100000000000000,32'b01001010000111111110100110000010, 3'b001);
+    $display("Queing Add operation...");
+    #12;
+    @(negedge tb_clk);
+    push(32'b01000100011101011100000000000000,32'b11001010000111111110100110000010, 3'b001);
+    $display("Queing Add operation...");
+    #12;
+    @(negedge tb_clk);
+    push(32'b01000100011101011100000000000000, 32'b01001010000111111110100110000010, 3'b001);
+
+    $display("Waiting for operation to complete...");
+    #500;
+    $display("Pulling result...");
+    pop;
+    $display("done: calculated result:     %b", tb_result);
+    $display("correct result:              01001010000111111101101000100110");
+    $display("Pulling result...");
+    pop;
+    $display("done: calculated result:     %b", tb_result);
+    $display("correct result:              11001010000111111101101000100110");
+    $display("Pulling result...");
+    pop;
+    $display("done: calculated result:     %b", tb_result);
+    $display("correct result:              00111111111100000000000000000000");
+     $display("Pulling result...");
+    pop;
+    $display("done: calculated result:     %b", tb_result);
+    $display("correct result:              01001010000111111101101000100110");
+    $display("Pulling result...");
+    pop;
+    $display("done: calculated result:     %b", tb_result);
+    $display("correct result:              11001010000111111101101000100110");
+    pop;
+    $display("done: calculated result:     %b", tb_result);
+    $display("correct result:              01001010000111111111100011011110");
+
     
+
+
+
+  /*  
   // Testing Add/Sub Block
   
   $display("1. ----------- reset -----------");

@@ -11,10 +11,10 @@ input wire clk, n_rst,
 input reg [31:0] add_result,
 input reg [31:0] mul_result,
 input reg [31:0] sine_result,
-input wire add_done, mul_done, sine_done, add_overflow, mul_overflow, cpu_pop,
+input wire add_done, mul_done, sine_done, cpu_pop,
 input reg [2:0] fifo_out,
 output reg [31:0] result,
-output wire done, overflow, out_fifo_hold, op_fifo_pop
+output reg  out_fifo_hold, op_fifo_pop, add_serv, mul_serv, sine_serv
 );
 
 //fifo registers
@@ -40,9 +40,13 @@ reg prev_pop;
 reg fifo_pop;
 reg pop; 
 reg strobe; //internal fifo strobe
+reg write;
 reg [31:0] fifo_in;
 reg [31:0] next_fifo_in;
 reg [2:0] opcode;
+reg add_s;
+reg mul_s;
+reg sine_s;
 
 //fifo pointers
 reg [2:0]in_point;
@@ -53,21 +57,78 @@ reg [31:0]data_out;
 reg [31:0]next_data;
 
 assign result = data_out;
+assign fifo_pop = cpu_pop;
+assign op_fifo_pop = add_serv || mul_serv || sine_serv;
 
 always_comb
 begin
-  if(add_done && (fifo_out == 3'b000)) begin
+  if(add_done && (fifo_out == 3'b001)) begin
     next_fifo_in = add_result;
-  end else if(add_done && (opcode == 3'b001)) begin
+    write = 1;
+    add_s = 1;
+    mul_s = 0;
+    sine_s = 0;
+  end else if(add_done && (opcode == 3'b010)) begin
     next_fifo_in = add_result;
-  end else if(mul_done && (opcode == 3'b010)) begin
+    write = 1;
+    add_s = 1;
+    sine_s = 0;
+    mul_s = 0;
+  end else if(mul_done && (opcode == 3'b011)) begin
     next_fifo_in = mul_result;
-  end else if(sine_done && (opcode == 3'b011)) begin
-    next_fifo_in = sine_result;
+    write = 1;
+    add_s = 0;
+    mul_s = 1;
+    sine_s = 0;
   end else if(sine_done && (opcode == 3'b100)) begin
     next_fifo_in = sine_result;
+    write = 1;
+    add_s = 0;
+    mul_s = 0;
+    sine_s = 1;
+  end else if(sine_done && (opcode == 3'b101)) begin
+    next_fifo_in = sine_result;
+    write = 1;
+    add_s = 0;
+    mul_s = 0;
+    sine_s = 1;
   end else begin
     next_fifo_in = next_data;
+    write = 0;
+    add_s = 0;
+    mul_s = 0;
+    sine_s = 0;
+  end
+end
+
+always @ (posedge clk, negedge n_rst)
+begin
+  if(~n_rst) begin
+    strobe <= 0;
+    add_serv <= 0;
+    mul_serv <= 0;
+    sine_serv <= 0;
+  end else begin
+    if(strobe) begin
+      strobe <= 0;
+    end else begin
+      strobe <= write;
+    end
+    if(add_serv) begin
+      add_serv <= 0;
+    end else begin
+      add_serv <= add_s;
+    end
+    if(mul_serv) begin
+      mul_serv <= 0;
+    end else begin
+      mul_serv <= mul_s;
+    end
+    if(sine_serv) begin
+      sine_serv <= 0;
+    end else begin
+      sine_serv <= sine_s;
+    end
   end
 end
 //update in pointer when pushing new frame (strobe signal asserted)
@@ -197,18 +258,6 @@ begin
   end
 end
 
-always_comb
-begin
-  if(pop && ~prev_pop) begin
-    if(fifo_status == 0) begin
-      fifo_pop = 0;
-    end else begin
-      fifo_pop = 1;
-    end
-  end else begin
-    fifo_pop = 0;
-  end 
-end
 
 always_comb
 begin

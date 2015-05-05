@@ -16,6 +16,10 @@ output reg [31:0] add_result,
 output reg add_done, add_busy
 );
 
+reg [31:0]op1_r;
+reg [31:0]op2_r;
+reg [31:0]result;
+
 bit sign;
 byte n, i, msbFound;
 reg [7:0] exp;
@@ -28,9 +32,25 @@ reg [23:0] f2;
 reg [24:0] tempFrac;
 reg [7:0] tempExp;
 reg [2:0] count;
-reg run;
 reg done;
 reg [2:0] next;
+
+assign add_result = result;
+always @ (posedge clk, negedge n_rst)
+begin
+  if(~n_rst) begin
+    op1_r <= 0;
+    op2_r <= 0;
+  end else begin
+    if(add_start) begin
+      op1_r <= op1;
+      op2_r <= op2;
+    end else begin
+      op1_r <= op1_r;
+      op2_r <= op2_r;
+    end
+  end
+end
 
 always @ (posedge clk, negedge n_rst)
 begin
@@ -103,14 +123,14 @@ end
 always_comb
 begin    
 if (n_rst == 0) begin
-    add_result = 32'b00000000000000000000000000000000;
+    result = 32'b00000000000000000000000000000000;
 end
 else begin
 
-exp1 = op1[30:23];
-exp2 = op2[30:23];
-f1 = {1,op1[22:0]};
-f2 = {1,op2[22:0]};
+exp1 = op1_r[30:23];
+exp2 = op2_r[30:23];
+f1 = {1,op1_r[22:0]};
+f2 = {1,op2_r[22:0]};
 sign = 0;
 
 ////////////// SAME EXPONENT //////////////////   
@@ -118,9 +138,9 @@ sign = 0;
    exp = exp1;
 
   //////////// SAME SIGN  /////////////
-    if(op1[31] == op2[31]) begin
+    if(op1_r[31] == op2_r[31]) begin
         frac = f1+f2;
-        sign = op1[31];
+        sign = op1_r[31];
           if (frac[24] == 1)
           exp = exp1 + 1'b1;
     end
@@ -128,12 +148,12 @@ sign = 0;
     else begin
         if (f1 > f2) begin
           frac = f1-f2;
-              if (op1[31] == 1)
+              if (op1_r[31] == 1)
                 sign = 1;
           end
         else begin
           frac = f2-f1;
-          if (op2[31] == 1)
+          if (op2_r[31] == 1)
                 sign = 1;
         end
       frac = frac << 2;
@@ -142,22 +162,22 @@ sign = 0;
       findMSB (tempFrac, tempExp, frac, exp);
       exp = exp - 1'b1;
     end
-    add_result = {sign, exp, frac[23:1]};
+    result = {sign, exp, frac[23:1]};
     
   //////////// SAME VALUE +/- /////////////
-  if ((op1[31] != op2[31]) && (f1 == f2)) begin
-      add_result = 32'b0000;
+  if ((op1_r[31] != op2_r[31]) && (f1 == f2)) begin
+      result = 32'b0000;
   end 
 end
 
 
 else if (exp1 > exp2) begin
 //$display("\n///////////////////// A > B /////////////////////");
- sign = op1[31];
+ sign = op1_r[31];
  expDiff = exp1 - exp2;
  f2 = f2 >> expDiff;
  exp = exp1;
-  if(op1[31] == op2[31]) begin
+  if(op1_r[31] == op2_r[31]) begin
          frac = f1+f2;
          if (frac[24] == 1)
           exp = exp1 + 1'b1;
@@ -167,12 +187,12 @@ else if (exp1 > exp2) begin
     else begin
           if (f1 > f2) begin
           frac = f1-f2;
-              if (op1[31] == 1)
+              if (op1_r[31] == 1)
                 sign = 1;
           end
         else begin
           frac = f2-f1;
-          if (op2[31] == 1)
+          if (op2_r[31] == 1)
                 sign = 1;
         end
  
@@ -181,17 +201,17 @@ else if (exp1 > exp2) begin
   tempExp = exp;
   findMSB (tempFrac, tempExp, frac, exp);
    end
-    add_result = {sign, exp, frac[23:1]};
+    result = {sign, exp, frac[23:1]};
 end
 
 else begin
 //$display("\n\n\n///////////////////// A < B /////////////////////");
- sign = op2[31];
+ sign = op2_r[31];
  expDiff = exp2 - exp1;
  f1 = f1 >> expDiff;
  exp = exp2;
 
- if(op1[31] == op2[31]) begin
+ if(op1_r[31] == op2_r[31]) begin
         frac = f1+f2;
         
          if (frac[24] == 1)
@@ -202,12 +222,12 @@ else begin
     else begin
           if (f1 > f2) begin
           frac = f1-f2;
-              if (op1[31] == 1)
+              if (op1_r[31] == 1)
                 sign = 1;
           end
         else begin
           frac = f2-f1;
-          if (op2[31] == 1)
+          if (op2_r[31] == 1)
             sign = 1;
         end
  
@@ -216,7 +236,7 @@ else begin
   tempExp = exp;
   findMSB (tempFrac, tempExp, frac, exp);
   end
-  add_result = {sign, exp, frac[23:1]};
+  result = {sign, exp, frac[23:1]};
 end
 end
 end

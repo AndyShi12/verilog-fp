@@ -15,6 +15,9 @@ output reg [31:0] mul_result,
 output reg mul_done, mul_busy
 );
 
+reg [31:0]op1_r;
+reg [31:0]op2_r;
+
 bit sign;
 reg [23:0] m1;
 reg [23:0] m2;
@@ -23,6 +26,23 @@ reg [47:0] mul;
 reg [2:0] count;
 reg done;
 reg [2:0] next;
+
+always @ (posedge clk, negedge n_rst)
+begin
+  if(~n_rst) begin
+    op1_r <= 0;
+    op2_r <= 0;
+  end else begin
+    if(mul_start) begin
+      op1_r <= op1;
+      op2_r <= op2;
+    end else begin
+      op1_r <= op1_r;
+      op2_r <= op2_r;
+    end
+  end
+end
+
 
 always @ (posedge clk, negedge n_rst)
 begin
@@ -98,14 +118,14 @@ end
 else begin
 // send start signal
 // determine exponent
-exp = op1[30:23] + op2[30:23];
+exp = op1_r[30:23] + op1_r[30:23];
 exp = exp - 8'b01111111;
 // determine mantissa
-m1 = {1,op1[22:0]};
-m2 = {1,op2[22:0]};
+m1 = {1,op1_r[22:0]};
+m2 = {1,op2_r[22:0]};
 mul = m1 * m2;
 // determine sign
-sign = op1[31] ^ op2[31];
+sign = op1_r[31] ^ op1_r[31];
 // set result
 if(mul[47] == 1) begin
 	mul = mul >> 1;

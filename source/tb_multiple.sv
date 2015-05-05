@@ -23,7 +23,6 @@ multiple MULTI(
           .n_rst(tb_nReset),
           .mul_start(tb_mul_start),
           .mul_done(tb_mul_done),
-          .mul_overflow(tb_mul_overflow),
           .op1(tb_op1),
           .op2(tb_op2),
           .mul_result(tb_mul_result),
