@@ -59,6 +59,7 @@ reg [31:0]next_data;
 assign result = data_out;
 assign fifo_pop = cpu_pop;
 assign op_fifo_pop = add_serv || mul_serv || sine_serv;
+assign out_fifo_hold = (fifo_status == 7);
 
 always_comb
 begin
@@ -98,6 +99,9 @@ begin
     add_s = 0;
     mul_s = 0;
     sine_s = 0;
+  end
+  if(out_fifo_hold) begin
+    write = 0;
   end
 end
 

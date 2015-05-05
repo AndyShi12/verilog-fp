@@ -21,6 +21,7 @@ module tb_wrapper();
   reg [31:0] tb_result;
   reg tb_cpu_pop;
   reg tb_op_strobe;
+  reg tb_cpu_hold;
   
   wrapper DUT(
   .clk(tb_clk),
@@ -30,7 +31,8 @@ module tb_wrapper();
   .op_sel(tb_op_sel),
   .result(tb_result),
   .op_strobe(tb_op_strobe),
-  .cpu_pop(tb_cpu_pop)
+  .cpu_pop(tb_cpu_pop),
+  .cpu_hold(tb_cpu_hold)
   );
 
 //clock generation
@@ -81,28 +83,28 @@ begin
     @(negedge tb_clk);
     push(32'b11000100011101011100000000000000,32'b01001010000111111110100110000010, 3'b001);
     $display("Queing Add operation...");
-    #12;
+    #16;
     @(negedge tb_clk);
     push(32'b01000100011101011100000000000000,32'b11001010000111111110100110000010, 3'b001);
     $display("Queing Mul operation...");
-    #12;
+    #16;
     @(negedge tb_clk);
     push(32'b00111111101000000000000000000000,32'b00111111110000000000000000000000, 3'b011);
     $display("Queing Add operation...");
-    #12;
+    #16;
     @(negedge tb_clk);
     push(32'b11000100011101011100000000000000,32'b01001010000111111110100110000010, 3'b001);
     $display("Queing Add operation...");
-    #12;
+    #16;
     @(negedge tb_clk);
     push(32'b01000100011101011100000000000000,32'b11001010000111111110100110000010, 3'b001);
     $display("Queing Add operation...");
-    #12;
+    #16;
     @(negedge tb_clk);
     push(32'b01000100011101011100000000000000, 32'b01001010000111111110100110000010, 3'b001);
 
     $display("Waiting for operation to complete...");
-    #500;
+    #80;
     $display("Pulling result...");
     pop;
     $display("done: calculated result:     %b", tb_result);
@@ -115,7 +117,7 @@ begin
     pop;
     $display("done: calculated result:     %b", tb_result);
     $display("correct result:              00111111111100000000000000000000");
-     $display("Pulling result...");
+    $display("Pulling result...");
     pop;
     $display("done: calculated result:     %b", tb_result);
     $display("correct result:              01001010000111111101101000100110");
@@ -123,9 +125,54 @@ begin
     pop;
     $display("done: calculated result:     %b", tb_result);
     $display("correct result:              11001010000111111101101000100110");
+    $display("Pulling result...");
     pop;
     $display("done: calculated result:     %b", tb_result);
     $display("correct result:              01001010000111111111100011011110");
+
+    $display("Filling Fifo...");
+    $display("Queing Mul operation...");
+    push(32'b11000000010000000000000000000000, 32'b11000000100000000000000000000000, 3'b011);
+    $display("Fifo Full: %b", tb_cpu_hold);
+    #16;
+    $display("Queing Mul operation...");
+    push(32'b00111111100000000000000000000000, 32'b11000000110000000000000000000000, 3'b011);
+    $display("Fifo Full: %b", tb_cpu_hold);
+    #16
+    $display("Queing Add operation...");
+    @(negedge tb_clk);
+    push(32'b11000100011101011100000000000000,32'b01001010000111111110100110000010, 3'b001);
+    $display("Fifo Full: %b", tb_cpu_hold);
+    $display("Queing Add operation...");
+    #16;
+    @(negedge tb_clk);
+    push(32'b01000100011101011100000000000000,32'b11001010000111111110100110000010, 3'b001);
+    $display("Fifo Full: %b", tb_cpu_hold);
+    $display("Queing Mul operation...");
+    #16;
+    @(negedge tb_clk);
+    push(32'b00111111101000000000000000000000,32'b00111111110000000000000000000000, 3'b011);
+    $display("Fifo Full: %b", tb_cpu_hold);
+    $display("Queing Add operation...");
+    #16;
+    @(negedge tb_clk);
+    push(32'b11000100011101011100000000000000,32'b01001010000111111110100110000010, 3'b001);
+    $display("Fifo Full: %b", tb_cpu_hold);
+    $display("Queing Add operation...");
+    #16;
+    @(negedge tb_clk);
+    push(32'b01000100011101011100000000000000,32'b11001010000111111110100110000010, 3'b001);
+    $display("Fifo Full: %b", tb_cpu_hold);
+    $display("Queing Add operation...");
+    #16;
+    @(negedge tb_clk);
+    push(32'b01000100011101011100000000000000, 32'b01001010000111111110100110000010, 3'b001);
+    #16;
+    $display("Fifo Full: %b", tb_cpu_hold);
+
+
+    
+
 
     
 
