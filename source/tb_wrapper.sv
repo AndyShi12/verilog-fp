@@ -109,26 +109,56 @@ begin
     pop;
     $display("done: calculated result:     %b", tb_result);
     $display("correct result:              01001010000111111101101000100110");
-    $display("Pulling result...");
+    
+    if(tb_result == 32'b01001010000111111101101000100110) 
+      $display("values match");
+    else 
+      $display("values don't match");
+    
+      $display("Pulling result...");
     pop;
     $display("done: calculated result:     %b", tb_result);
     $display("correct result:              11001010000111111101101000100110");
+    if(tb_result == 32'b11001010000111111101101000100110) 
+      $display("values match");
+    else 
+      $display("values don't match");
+
     $display("Pulling result...");
     pop;
     $display("done: calculated result:     %b", tb_result);
     $display("correct result:              00111111111100000000000000000000");
+    if(tb_result == 32'b00111111111100000000000000000000) 
+      $display("values match");
+    else 
+      $display("values don't match");
+
     $display("Pulling result...");
     pop;
     $display("done: calculated result:     %b", tb_result);
     $display("correct result:              01001010000111111101101000100110");
+    if(tb_result == 32'b01001010000111111101101000100110) 
+      $display("values match");
+    else 
+      $display("values don't match");
+
     $display("Pulling result...");
     pop;
     $display("done: calculated result:     %b", tb_result);
     $display("correct result:              11001010000111111101101000100110");
+    if(tb_result == 32'b11001010000111111101101000100110) 
+      $display("values match");
+    else 
+      $display("values don't match");
+
     $display("Pulling result...");
     pop;
     $display("done: calculated result:     %b", tb_result);
     $display("correct result:              01001010000111111111100011011110");
+    if(tb_result == 32'b01001010000111111111100011011110) 
+      $display("values match");
+    else 
+      $display("values don't match");
 
     $display("Filling Fifo...");
     $display("Queing Mul operation...");
