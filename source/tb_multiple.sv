@@ -83,7 +83,7 @@ initial
   #(10*CHECK_DELAY);
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
 
-
+/*
   $display("\n\n----------- neg/neg -----------");
   @(negedge tb_clk);
   tb_op1 = 32'b11000000011111111111111111111111;
@@ -109,7 +109,7 @@ initial
   #(8*CHECK_DELAY);
   $display("done: %b, calculated result:  %b", tb_mul_done, tb_mul_result);
  
-
+*/
 
   end
 endmodule 
